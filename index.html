@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مدرسة السيرافيم للألحان والتسبحة الكنسية | كنيسة السيدة العذراء مريم بالمنشاة</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Cairo & Tajawal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: {
+              bg: '#FBF7F0',
+              card: '#FFFFFF',
+              soft: '#F5EFE6',
+              goldLight: '#F3E7D3'
+            },
+            brand: {
+              brown: '#4A2311',
+              brownDark: '#331609',
+              brownLight: '#6B3820',
+              gold: '#C88A36',
+              goldBorder: '#E6D5B8',
+              crimson: '#9B1C1C'
+            }
+          },
+          fontFamily: {
+            sans: ['Cairo', 'Tajawal', 'sans-serif']
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(74, 35, 17, 0.06)',
+            'card': '0 2px 10px rgba(74, 35, 17, 0.04)',
+            'phone': '0 20px 50px -12px rgba(74, 35, 17, 0.18)'
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      background-color: #F4EFE6;
+      color: #4A2311;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FBF7F0;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #DFCBB0;
+      border-radius: 9999px;
+    }
+
+    /* QR Scanner Laser Animation */
+    @keyframes scanline {
+      0% { top: 10%; opacity: 0.2; }
+      50% { top: 85%; opacity: 1; }
+      100% { top: 10%; opacity: 0.2; }
+    }
+    .scanner-laser {
+      animation: scanline 2.4s ease-in-out infinite;
+    }
+
+    /* Wheel Spin Smooth Transition */
+    .wheel-transition {
+      transition: transform 4.2s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    }
+
+    /* Audio Wave Pulse */
+    @keyframes pulseBar {
+      0%, 100% { transform: scaleY(0.4); }
+      50% { transform: scaleY(1); }
+    }
+    .wave-bar {
+      animation: pulseBar 0.8s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center sm:py-6">
+
+  <!-- Mobile App Container -->
+  <div id="app-shell" class="w-full max-w-[440px] min-h-screen sm:min-h-[820px] sm:max-h-[880px] bg-cream-bg sm:rounded-[38px] sm:border-[4px] sm:border-brand-brown shadow-phone flex flex-col overflow-hidden relative">
+
+    <!-- Top Demo / Admin Quick Control Bar (Subtle helper for testing states) -->
+    <div id="demo-banner" class="bg-brand-brown text-cream-bg text-[11px] px-3 py-1.5 flex items-center justify-between border-b border-brand-gold/30 z-30">
+      <div class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>مدرسة السيرافيم — كنيسة العذراء بالمنشاة</span>
+      </div>
+      <button onclick="openAdminSimulator()" class="bg-brand-gold/25 hover:bg-brand-gold/40 text-amber-200 px-2 py-0.5 rounded-full text-[10px] font-semibold transition">
+        <i class="fa-solid fa-user-shield ml-1"></i>محاكاة الإدارة
+      </button>
+    </div>
+
+    <!-- Main Dynamic Screen Viewport -->
+    <main id="screen-container" class="flex-1 overflow-y-auto overflow-x-hidden relative pb-6">
+      <!-- Content injected dynamically by JS -->
+    </main>
+
+    <!-- Reusable Modal Overlay -->
+    <div id="modal-overlay" class="hidden fixed inset-0 sm:absolute bg-brand-brown/50 backdrop-blur-[2px] z-50 flex items-center justify-center p-4">
+      <div id="modal-content" class="bg-white w-full max-w-[380px] rounded-3xl border border-brand-goldBorder shadow-xl p-5 relative animate-[fadeIn_0.2s_ease-out]">
+        <!-- Modal body injected dynamically -->
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-box" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 sm:absolute sm:bottom-5 z-50 bg-brand-brown text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 whitespace-nowrap">
+      <i id="toast-icon" class="fa-solid fa-circle-check text-brand-gold"></i>
+      <span id="toast-text">تم الحفظ بنجاح</span>
+    </div>
+
+  </div>
+
+  <!-- SVG Logo Template Definition -->
+  <template id="seraphim-logo-tpl">
+    <svg viewBox="0 0 220 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <path id="copticTopArc" d="M 28,110 A 82,82 0 1,1 192,110 A 82,82 0 1,1 28,110" />
+        <path id="arabicInnerArc" d="M 48,115 A 62,62 0 1,1 172,115" />
+      </defs>
+      <!-- Outer White Circle & Gold Border -->
+      <circle cx="110" cy="110" r="105" fill="#FFFFFF" stroke="#D4A338" stroke-width="3.5" />
+      <circle cx="110" cy="110" r="99" fill="none" stroke="#E6D5B8" stroke-width="1" />
+
+      <!-- Top Red Coptic Cross -->
+      <g fill="#9B1C1C" transform="translate(110, 32)">
+        <path d="M-4,-15 L4,-15 L3,-4 L15,-4 L15,4 L3,3 L4,15 L-4,15 L-3,3 L-15,4 L-15,-4 L-3,-4 Z" />
+        <polygon points="-6,-16 6,-16 0,-12" />
+        <polygon points="-6,16 6,16 0,12" />
+        <polygon points="-16,-6 -16,6 -12,0" />
+        <polygon points="16,-6 16,6 12,0" />
+      </g>
+
+      <!-- Circular Coptic Text Around Perimeter -->
+      <text fill="#9B1C1C" font-size="13.5" font-weight="800" letter-spacing="1.2">
+        <textPath href="#copticTopArc" startOffset="12%">
+          Ϯⲁⲛⲍⲏⲃ ⲛ̀ⲧⲉ ⲛⲓⲥⲉⲣⲁⲫⲓⲙ ⲛ̀ⲛⲓⲇⲓⲁⲕⲱⲛ
+        </textPath>
+      </text>
+
+      <!-- Inner Curved Arabic Text -->
+      <text fill="#5C7A29" font-size="9.5" font-weight="800">
+        <textPath href="#arabicInnerArc" startOffset="50%" text-anchor="middle">
+          مدرسة السيرافيم بكنيسة السيدة العذراء بالمنشاة
+        </textPath>
+      </text>
+
+      <!-- Six-Winged Seraphim Icon in Center -->
+      <g transform="translate(110, 126)">
+        <!-- Upper Crossed Wings -->
+        <path d="M-5,-12 C-18,-35 -36,-52 -46,-60 C-38,-40 -24,-20 -8,-6 Z" fill="#F4EFE6" stroke="#8C7A5B" stroke-width="1.2" />
+        <path d="M5,-12 C18,-35 36,-52 46,-60 C38,-40 24,-20 8,-6 Z" fill="#EFE7D6" stroke="#8C7A5B" stroke-width="1.2" />
+        <!-- Feather lines upper -->
+        <line x1="-15" y1="-22" x2="-35" y2="-45" stroke="#A69374" stroke-width="0.8" />
+        <line x1="15" y1="-22" x2="35" y2="-45" stroke="#A69374" stroke-width="0.8" />
+
+        <!-- Middle Spread Wings -->
+        <path d="M-12,-4 C-38,-22 -64,-12 -68,18 C-52,16 -34,12 -14,6 Z" fill="#FAF6EE" stroke="#8C7A5B" stroke-width="1.2" />
+        <path d="M12,-4 C38,-22 64,-12 68,18 C52,16 34,12 14,6 Z" fill="#FAF6EE" stroke="#8C7A5B" stroke-width="1.2" />
+        <!-- Feather lines middle -->
+        <path d="M-24,-4 Q-45,-6 -58,12" fill="none" stroke="#A69374" stroke-width="0.8" />
+        <path d="M24,-4 Q45,-6 58,12" fill="none" stroke="#A69374" stroke-width="0.8" />
+
+        <!-- Lower Crossed Wings -->
+        <path d="M-14,4 C-26,22 -34,42 -36,54 C-18,44 -4,26 10,12 Z" fill="#EFE7D6" stroke="#8C7A5B" stroke-width="1.2" />
+        <path d="M14,4 C26,22 34,42 36,54 C18,44 4,26 -10,12 Z" fill="#F4EFE6" stroke="#8C7A5B" stroke-width="1.2" />
+
+        <!-- Halo -->
+        <circle cx="0" cy="-6" r="14" fill="#FDE68A" stroke="#C88A36" stroke-width="1.2" />
+        <!-- Angelic Face -->
+        <ellipse cx="0" cy="-5" rx="9" ry="11" fill="#F7D5B4" stroke="#8C583A" stroke-width="1" />
+        <!-- Hair -->
+        <path d="M-9,-7 C-10,-16 10,-16 9,-7 C9,-11 -9,-11 -9,-7 Z" fill="#78350F" />
+        <path d="M-9,-7 C-11,-1 -10,4 -7,5" fill="none" stroke="#78350F" stroke-width="2.2" stroke-linecap="round" />
+        <path d="M9,-7 C11,-1 10,4 7,5" fill="none" stroke="#78350F" stroke-width="2.2" stroke-linecap="round" />
+        <!-- Eyes, Nose & Mouth -->
+        <circle cx="-3.2" cy="-6" r="1" fill="#4A2311" />
+        <circle cx="3.2" cy="-6" r="1" fill="#4A2311" />
+        <path d="M0,-5 L0,-2" stroke="#8C583A" stroke-width="0.9" stroke-linecap="round" />
+        <path d="M-2.2,1 Q0,2.5 2.2,1" fill="none" stroke="#9B1C1C" stroke-width="1" stroke-linecap="round" />
+      </g>
+    </svg>
+  </template>
+
+  <script>
+    /**
+     * ============================================================================
+     * STATE MANAGEMENT & DEFAULT SEED DATA (مدرسة السيرافيم - المنشاة)
+     * ============================================================================
+     */
+    const STORAGE_KEY = 'seraphim_manshah_app_v1';
+
+    const DEFAULT_STATE = {
+      currentScreen: 'auth', // 'auth' | 'home' | 'attendance' | 'recitation' | 'materials' | 'points' | 'notifications' | 'profile'
+      authTab: 'login', // 'login' | 'register'
+      pendingApprovalBanner: false,
+      activeSubjectId: 'alhan',
+      recitationFilter: 'all', // 'all' | 'available' | 'closed'
+
+      // Registered Student User
+      user: {
+        id: 'STU-2026-01',
+        name: 'يوسف مينا جرجس إبراهيم',
+        phone: '01098765001',
+        whatsapp: '01098765001',
+        parentPhone: '01098765002',
+        birthDate: '2014-05-12',
+        gender: 'ذكر',
+        rank: 'إبصالتس',
+        grade: 'خامسة وستة',
+        password: '12345678',
+        avatar: '', // base64 image if uploaded, else initial letter
+        status: 'active', // 'active' | 'pending'
+        points: 352,
+        spinsAvailable: 1,
+        spinsUsed: 0
+      },
+
+      // Attendance State
+      attendance: {
+        status: 'pending', // 'pending' | 'checked_in' | 'checked_out'
+        checkInTime: null,
+        checkOutTime: null,
+        todayCode: '277932'
+      },
+
+      // Points Deductions & Weekly Seals
+      deductions: [
+        { id: 1, title: 'خصم تأخير 14 دقيقة', points: -7, date: 'الجمعة 30 أكتوبر 2026' }
+      ],
+      seals: [
+        { week: 'أسبوع 15 أكتوبر 2026', earned: false },
+        { week: 'أسبوع 22 أكتوبر 2026', earned: true },
+        { week: 'أسبوع 29 أكتوبر 2026', earned: true },
+        { week: 'أسبوع 5 نوفمبر 2026', earned: true },
+        { week: 'أسبوع 12 نوفمبر 2026', earned: true }
+      ],
+
+      // Subjects, Materials & Recitation Tasks
+      subjects: {
+        alhan: {
+          id: 'alhan',
+          name: 'الألحان',
+          subtitle: 'مردات وتسابيح كنسية',
+          icon: 'fa-music',
+          teacher: 'أ. بيتر سمير',
+          materials: [
+            {
+              id: 'm-alhan-1',
+              title: 'مذكرة لحن أجيوس — النغمات والهزات',
+              date: '3 نوفمبر 2026',
+              type: 'ملف PDF',
+              content: 'نص لحن أجيوس (قدوس الله):\n\nأجيوس أو ثيئوس، أجيوس يسشيروس، أجيوس أثاناتوس، أو إك بارثينو جينيثيس، إليسون إيماس.\n\nملاحظات الأداء:\n- يُقال اللحن بنغمة الفرايحي في الأعياد السيدية والآحاد.\n- التركيز على المد في كلمة "أجيوس" والوقفة السليمة قبل "إليسون إيماس".'
+            },
+            {
+              id: 'm-alhan-2',
+              title: 'مردات الأبركسيس والسنكسار السنوي',
+              date: '10 نوفمبر 2026',
+              type: 'ملف PDF',
+              content: 'مرد الأبركسيس السنوي:\n"شيري ني ماريا تي اتشرومبي إثنيسوس..."\nيُحفظ باللحن الصغير واللحن الكبير استعداداً لتسميع نهاية الشهر.'
+            }
+          ],
+          tasks: [
+            {
+              id: 't-alhan-1',
+              title: 'تسميع لحن أجيوس — الأسبوع السابع',
+              dueDate: 'الأربعاء 11:59 م • تسميع صوتي مباشر',
+              weekLabel: 'الألحان • أسبوع 19 نوفمبر 2026',
+              status: 'available', // 'available' | 'completed' | 'expired'
+              score: null
+            },
+            {
+              id: 't-alhan-2',
+              title: 'تسميع لحن أجيوس — الأسبوع السادس',
+              dueDate: 'آخر موعد: الأربعاء 11:59 م • تسميع صوتي مباشر',
+              weekLabel: 'الألحان • أسبوع 5 نوفمبر 2026',
+              status: 'completed',
+              score: '10/10'
+            },
+            {
+              id: 't-alhan-3',
+              title: 'تسميع لحن أجيوس — الأسبوع الخامس',
+              dueDate: 'آخر موعد: الأربعاء 11:59 م • تسميع صوتي مباشر',
+              weekLabel: 'الألحان • أسبوع 29 أكتوبر 2026',
+              status: 'expired',
+              score: '10/10'
+            }
+          ]
+        },
+        coptic: {
+          id: 'coptic',
+          name: 'القبطي',
+          subtitle: 'قواعد النطق ومفردات الكنيسة',
+          icon: 'fa-language',
+          teacher: 'أ. مينا عادل',
+          materials: [
+            {
+              id: 'm-coptic-1',
+              title: 'مذكرة الحروف المتحركة وحرف الجنجا',
+              date: '1 نوفمبر 2026',
+              type: 'ملف PDF',
+              content: 'قواعد نطق حرف الجنجا (Ϫ):\n1. يُنطق (ج) معطشة إذا جاء بعده حرف متحرك للكسر (ⲉ, ⲏ, ⲓ, ⲩ).\n2. يُنطق (ج) غير معطشة فيما عدا ذلك.\nأمثلة: ϫⲱⲙ (جوم = كتاب) — ϫⲓϫ (جيج = يد).'
+            }
+          ],
+          tasks: [
+            {
+              id: 't-coptic-1',
+              title: 'قراءة قطعة كيريي إليسون بالقبطي',
+              dueDate: 'الخميس 10:00 م • تسجيل صوتي',
+              weekLabel: 'القبطي • أسبوع 19 نوفمبر 2026',
+              status: 'available',
+              score: null
+            },
+            {
+              id: 't-coptic-2',
+              title: 'اختبار الحروف القبطية المركبة',
+              dueDate: 'تم التسليم بنجاح',
+              weekLabel: 'القبطي • أسبوع 5 نوفمبر 2026',
+              status: 'completed',
+              score: '10/10'
+            }
+          ]
+        },
+        rituals: {
+          id: 'rituals',
+          name: 'الطقس',
+          subtitle: 'اختبارات الصلوات، الطقوس، وحركات الطلاب',
+          icon: 'fa-church',
+          teacher: 'أ. كيرلس مجدي',
+          materials: [
+            {
+              id: 'm-rituals-1',
+              title: 'مذكرة ترتيب القداس الإلهي ودورة البخور',
+              date: '4 نوفمبر 2026',
+              type: 'ملف PDF',
+              content: 'ترتيب دورة البخور:\nتُرفع دورة البخور أثناء قراءة الإبركسيس في القداس الإلهي.'
+            }
+          ],
+          tasks: []
+        },
+        memorization: {
+          id: 'memorization',
+          name: 'المحفوظات',
+          subtitle: 'مزامير الأجبية والصلوات والقطع المحفوظة',
+          icon: 'fa-book-bible',
+          teacher: '',
+          materials: [],
+          tasks: []
+        }
+      },
+
+      // Empty Notifications List (0 unread)
+      notifications: []
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          return JSON.parse(saved);
+        }
+      } catch (e) {
+        console.warn('Could not load state from localStorage', e);
+      }
+      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn('Could not save state', e);
+      }
+    }
+
+    function getLogoHTML(sizeClass = 'w-24 h-24') {
+      const tpl = document.getElementById('seraphim-logo-tpl');
+      return `<div class="${sizeClass} rounded-full overflow-hidden shadow-sm border border-brand-goldBorder bg-white flex items-center justify-center shrink-0">${tpl.innerHTML}</div>`;
+    }
+
+    function getAvatarHTML(sizeClass = 'w-20 h-20 text-2xl') {
+      const trimmedName = (state.user.name || '').trim();
+      const firstChar = trimmedName ? trimmedName.charAt(0) : '';
+      if (state.user.avatar) {
+        return `<img src="${state.user.avatar}" alt="صورة الطالب" class="${sizeClass} rounded-full object-cover border-[3px] border-brand-gold shadow-sm" />`;
+      }
+      return `
+        <div class="${sizeClass} rounded-full border-[3px] border-brand-gold bg-cream-soft flex items-center justify-center font-extrabold text-brand-brown shadow-inner">
+          ${firstChar || '<i class="fa-regular fa-user text-stone-400"></i>'}
+        </div>
+      `;
+    }
+
+    function getUnreadCount() {
+      return Array.isArray(state.notifications) ? state.notifications.filter(n => n.unread).length : 0;
+    }
+
+    function calculateAge(birthDateStr) {
+      if (!birthDateStr) return null;
+      const diff = Date.now() - new Date(birthDateStr).getTime();
+      const age = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+      return age >= 0 ? age : null;
+    }
+
+    function showToast(msg, iconClass = 'fa-circle-check text-brand-gold') {
+      const box = document.getElementById('toast-box');
+      const text = document.getElementById('toast-text');
+      const icon = document.getElementById('toast-icon');
+      text.textContent = msg;
+      icon.className = `fa-solid ${iconClass}`;
+      box.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        box.classList.add('hidden');
+      }, 3000);
+    }
+
+    function openModal(innerHTML) {
+      const overlay = document.getElementById('modal-overlay');
+      const content = document.getElementById('modal-content');
+      content.innerHTML = innerHTML;
+      overlay.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.add('hidden');
+    }
+
+    function navigate(screen) {
+      state.currentScreen = screen;
+      saveState();
+      render();
+      document.getElementById('screen-container').scrollTop = 0;
+    }
+
+    /**
+     * ============================================================================
+     * SCREEN 1: AUTHENTICATION (LOGIN & REGISTER)
+     * ============================================================================
+     */
+    function renderAuthScreen() {
+      const isLogin = state.authTab === 'login';
+      const isPending = state.user.status === 'pending' && state.pendingApprovalBanner;
+
+      return `
+        <div class="p-4 pt-5 flex flex-col items-center">
+          <!-- Pending Approval Alert Banner (Matches Screen 10) -->
+          ${isPending ? `
+            <div class="w-full bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl p-3 mb-4 text-xs flex items-center justify-between shadow-sm">
+              <div class="leading-relaxed">
+                <p class="font-bold">حسابك قيد المراجعة من قبل المدير — للتواصل مع إدارة المدرسة:</p>
+                <p class="font-extrabold underline mt-0.5 text-rose-900" dir="ltr">01000000001</p>
+              </div>
+              <button onclick="simulateAdminApproval()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1.5 rounded-xl text-[11px] font-bold shrink-0 mr-2 shadow">
+                تفعيل الآن (تجريبي)
+              </button>
+            </div>
+          ` : ''}
+
+          <!-- Logo & School Header -->
+          <div class="flex flex-col items-center text-center mb-5">
+            ${getLogoHTML('w-24 h-24 mb-3')}
+            <h1 class="text-xl font-extrabold text-brand-brown tracking-tight">مدرسة السيرافيم</h1>
+            <p class="text-sm font-bold text-brand-gold mt-0.5">للألحان والتسبحة الكنسية</p>
+            <div class="inline-flex items-center gap-1.5 text-xs text-stone-600 mt-1.5 bg-white px-3 py-1 rounded-full border border-brand-goldBorder/70">
+              <i class="fa-solid fa-church text-brand-gold"></i>
+              <span>كنيسة السيدة العذراء مريم بالمنشاة</span>
+            </div>
+          </div>
+
+          <!-- Auth Mode Tabs -->
+          <div class="w-full bg-cream-soft p-1.5 rounded-2xl grid grid-cols-2 gap-1.5 mb-4 border border-brand-goldBorder/50">
+            <button onclick="switchAuthTab('register')" class="py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${!isLogin ? 'bg-brand-brown text-white shadow' : 'text-brand-brown hover:bg-white/60'}">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>انضمام للمدرسة</span>
+            </button>
+            <button onclick="switchAuthTab('login')" class="py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition ${isLogin ? 'bg-brand-brown text-white shadow' : 'text-brand-brown hover:bg-white/60'}">
+              <i class="fa-solid fa-right-to-bracket"></i>
+              <span>دخول</span>
+            </button>
+          </div>
+
+          <!-- Form Card -->
+          <div class="w-full bg-white rounded-3xl p-5 border border-brand-goldBorder/80 shadow-soft">
+            ${isLogin ? renderLoginForm() : renderRegisterForm()}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLoginForm() {
+      return `
+        <h2 class="text-base font-extrabold text-brand-brown mb-4">تسجيل الدخول</h2>
+        <form onsubmit="handleLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-brand-brown mb-1.5">رقم الموبايل</label>
+            <div class="relative">
+              <input id="login-phone" type="tel" value="" placeholder="01xxxxxxxxx" required
+                class="w-full bg-cream-soft/80 border border-brand-goldBorder rounded-xl py-3 pr-10 pl-3 text-sm font-semibold text-left focus:outline-none focus:border-brand-gold" dir="ltr" />
+              <i class="fa-solid fa-key text-stone-400 absolute right-3.5 top-1/2 -translate-y-1/2 text-xs"></i>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-bold text-brand-brown">كلمة المرور</label>
+              <button type="button" onclick="showForgotPasswordModal()" class="text-[11px] font-semibold text-brand-gold hover:underline">
+                نسيت كلمة المرور؟
+              </button>
+            </div>
+            <div class="relative">
+              <input id="login-password" type="password" value="" placeholder="أدخل كلمة المرور" required
+                class="w-full bg-cream-soft/80 border border-brand-goldBorder rounded-xl py-3 pr-10 pl-10 text-sm font-semibold text-left focus:outline-none focus:border-brand-gold" dir="ltr" />
+              <i class="fa-solid fa-lock text-stone-400 absolute right-3.5 top-1/2 -translate-y-1/2 text-xs"></i>
+              <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="text-stone-400 hover:text-brand-brown absolute left-3.5 top-1/2 -translate-y-1/2 text-xs">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full bg-brand-brown hover:bg-brand-brownDark text-white font-bold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 transition active:scale-[0.99]">
+            <span>دخول</span>
+            <i class="fa-solid fa-arrow-left text-xs"></i>
+          </button>
+
+          <div class="pt-2 border-t border-cream-soft">
+            <button type="button" onclick="quickDemoLogin()" class="w-full bg-cream-goldLight/50 hover:bg-cream-goldLight text-brand-brown border border-brand-goldBorder text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-arrow-left-to-bracket text-brand-gold"></i>
+              <span>دخول مباشر إلى الشاشة الرئيسية (نسخة جديدة)</span>
+            </button>
+          </div>
+        </form>
+      `;
+    }
+
+    function renderRegisterForm() {
+      const grades = ['حضانة', 'أولى وتانية', 'تالتة ورابعة', 'خامسة وستة', 'إعدادي', 'ثانوي', 'جامعة'];
+      const ranks = ['إبصالتس', 'أغنسطس', 'إيبودياكون', 'شماس', 'بدون رتبة'];
+
+      return `
+        <h2 class="text-base font-extrabold text-brand-brown mb-4">طلب انضمام طالب جديد</h2>
+        <form onsubmit="handleRegister(event)" class="space-y-3.5">
+          <!-- Student Photo Upload -->
+          <div class="bg-cream-soft/70 border border-brand-goldBorder rounded-2xl p-4 flex flex-col items-center justify-center relative">
+            <span class="absolute -top-2.5 right-3 bg-white border border-brand-goldBorder text-[10px] font-bold px-2 py-0.5 rounded-full text-brand-brown">صورة واضحة</span>
+            <label for="reg-avatar" class="cursor-pointer group relative">
+              <div id="reg-avatar-preview">
+                ${getAvatarHTML('w-20 h-20 text-2xl')}
+              </div>
+              <div class="w-7 h-7 rounded-full bg-brand-brown text-white flex items-center justify-center absolute -bottom-1 -left-1 border-2 border-white shadow">
+                <i class="fa-solid fa-camera text-[11px]"></i>
+              </div>
+            </label>
+            <input id="reg-avatar" type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)" />
+            <span class="text-[11px] text-stone-500 mt-2">اضغط لرفع صورة شخصية للطالب</span>
+          </div>
+
+          <!-- Full Name -->
+          <div>
+            <label class="block text-xs font-bold text-brand-brown mb-1">الاسم رباعي <span class="text-rose-600">*</span></label>
+            <div class="relative">
+              <input id="reg-name" type="text" value="" placeholder="اكتب الاسم الرباعي للطالب" required
+                class="w-full bg-cream-soft/80 border border-brand-goldBorder rounded-xl py-2.5 pr-9 pl-3 text-xs font-semibold focus:outline-none focus:border-brand-gold" />
+              <i class="fa-regular fa-id-card text-stone-400 absolute right-3 top-1/2 -translate-y-1/2 text-xs"></i>
+            </div>
+          </div>
+
+          <!-- Gender Selection -->
+          <div>
+            <label class="block text-xs font-bold text-brand-brown mb-1">النوع <span class="text-rose-600">*</span></label>
+            <input type="hidden" id="reg-gender" value="" />
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" id="btn-gender-male" onclick="selectGender('ذكر')" class="py-2.5 rounded-xl border border-brand-goldBorder bg-cream-soft/60 text-stone-600 text-xs font-bold flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-child"></i>
+                <span>ذكر</span>
+              </button>
+              <button type="button" id="btn-gender-female" onclick="selectGender('أنثى')" class="py-2.5 rounded-xl border border-brand-goldBorder bg-cream-soft/60 text-stone-600 text-xs font-bold flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-child-dress"></i>
+                <span>أنثى</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Ecclesiastical Rank -->
+          <div>
+            <label class="block text-xs font-bold text-brand-brown mb-1">الرتبة الكنسية</label>
+            <div class="relative">
+              <select id="reg-rank" class="w-full bg-cream-soft/80 border border-brand-goldBorder rounded-xl py-2.5 pr-9 pl-3 text-xs font-bold text-brand-brown focus:outline-none focus:border-brand-gold appearance-none">
+                <option value="" selected>اختر الرتبة الكنسية</option>
+                ${ranks.map(r => `<option value="${r}">${r}</option>`).join('')}
+              </select>
+              <i class="fa-solid fa-church text-stone-400 absolute right-3 top-1/2 -translate-y-1/2 text-xs"></i>
+              <i class="fa-solid fa-chevron-down text-stone-400 absolute left-3 top-1/2 -translate-y-1/2 text-[10px]"></i>
+            </div>
+          </div>
+
+          <!-- Educational Stage -->
+          <div>
+            <label class="block text-xs font-bold text-brand-brown mb-1">المرحلة الدراسية</label>
+            <div class="relative">
+              <select id="reg-grade" class="w-full bg-cream-soft/80 border border-brand-goldBorder rounded-xl py-2.5 pr-9 pl-3 text-xs font-bold text-brand-brown focus:outline-none focus:border-brand-gold appearance-none">
+                <option value="" selected>اختر المرحلة الدراسية</option>
+                ${grades.map(g => `<option value="${g}">${g}</option>`).join('')}
+              </select>
+              <i class="fa-solid fa-graduation-cap text-stone-400 absolute right-3 top-1/2 -translate-y-1/2 text-xs"></i>
+              <i class="fa-solid fa-chevron-down text-stone-400 absolute left-3 top-1/2 -translate-y-1/2 text-[10px]"></i>
+            </div>
+          </div>
+
+          <!-- Mobile Number -->
+          <div>
+            <label class="block text-xs font-bold text-brand-brown mb-1">رقم الموبايل <span class="text-rose-600">*</span></label>
+            <div class="relative">
+              <input id="reg-phone" type="tel" value="" placeholder="01xxxxxxxxx" required oninput="syncWhatsappIfChecked()"
+                class="w-full bg-cream-soft/80 border border-brand-goldBorder rounded-xl py-2.5 pr-9 pl-3 text-xs font-semibold text-left focus:outline-none focus:border-brand-gold" dir="ltr" />
+              <i class="fa-solid fa-mobile-screen text-stone-400 absolute right-3 top-1/2 -translate-y-1/2 text-xs"></i>
+            </div>
+          </div>
+
+          <!-- WhatsApp Number with "مطابق" checkbox -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-bold text-brand-brown">رقم الواتساب</label>
+              <label class="inline-flex items-center gap-1.5 text-[11px] font-bold text-brand-brown cursor-pointer">
+                <input id="reg-same-wa" type="checkbox" onchange="syncWhatsappIfChecked()" class="accent-brand-brown rounded" />
+                <span>مطابق</span>
+              </label>
+            </div>
+            <div class="relative">
+              <input id="reg-whatsapp" type="tel" value="" placeholder="01xxxxxxxxx"
+                class="w-full bg-cream-soft/80 border border-brand-goldBorder rounded-xl py-2.5 pr-9 pl-3 text-xs font-semibold text-left focus:outline-none focus:border-brand-gold" dir="ltr" />
+              <i class="fa-brands fa-whatsapp text-emerald-600 absolute right-3 top-1/2 -translate-y-1/2 text-sm"></i>
+            </div>
+          </div>
+
+          <!-- Parent Phone -->
+          <div>
+            <label class="block text-xs font-bold text-brand-brown mb-1">رقم ولي الأمر <span class="text-rose-600">*</span></label>
+            <div class="relative">
+              <input id="reg-parent" type="tel" value="" placeholder="01xxxxxxxxx" required
+                class="w-full bg-cream-soft/80 border border-brand-goldBorder rounded-xl py-2.5 pr-9 pl-3 text-xs font-semibold text-left focus:outline-none focus:border-brand-gold" dir="ltr" />
+              <i class="fa-solid fa-users text-stone-400 absolute right-3 top-1/2 -translate-y-1/2 text-xs"></i>
+            </div>
+          </div>
+
+          <!-- Birth Date -->
+          <div>
+            <label class="block text-xs font-bold text-brand-brown mb-1">تاريخ الميلاد</label>
+            <div class="relative">
+              <input id="reg-birth" type="date" value=""
+                class="w-full bg-cream-soft/80 border border-brand-goldBorder rounded-xl py-2.5 pr-9 pl-3 text-xs font-semibold text-left focus:outline-none focus:border-brand-gold" dir="ltr" />
+              <i class="fa-regular fa-calendar text-stone-400 absolute right-3 top-1/2 -translate-y-1/2 text-xs"></i>
+            </div>
+          </div>
+
+          <!-- New Password -->
+          <div>
+            <label class="block text-xs font-bold text-brand-brown mb-1">كلمة المرور الجديدة <span class="text-rose-600">*</span></label>
+            <div class="relative">
+              <input id="reg-password" type="password" value="" placeholder="أدخل كلمة مرور جديدة" required minlength="4"
+                class="w-full bg-cream-soft/80 border border-brand-goldBorder rounded-xl py-2.5 pr-9 pl-9 text-xs font-semibold text-left focus:outline-none focus:border-brand-gold" dir="ltr" />
+              <i class="fa-solid fa-lock text-stone-400 absolute right-3 top-1/2 -translate-y-1/2 text-xs"></i>
+              <button type="button" onclick="togglePasswordVisibility('reg-password', this)" class="text-stone-400 absolute left-3 top-1/2 -translate-y-1/2 text-xs">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full bg-brand-brown hover:bg-brand-brownDark text-white font-bold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 transition mt-2">
+            <i class="fa-solid fa-user-plus text-xs"></i>
+            <span>إرسال طلب الانضمام</span>
+          </button>
+        </form>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * SHARED SUB-SCREEN HEADER
+     * ============================================================================
+     */
+    function renderSubHeader(title) {
+      return `
+        <header class="bg-white/90 backdrop-blur sticky top-0 z-20 px-4 py-3 border-b border-brand-goldBorder/60 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            ${getLogoHTML('w-9 h-9')}
+            <div>
+              <h1 class="text-sm font-extrabold text-brand-brown leading-tight">${title}</h1>
+              <p class="text-[10px] font-semibold text-stone-500">مدرسة السيرافيم للألحان والتسبحة</p>
+            </div>
+          </div>
+          <button onclick="navigate('home')" class="w-9 h-9 rounded-full bg-cream-soft hover:bg-cream-goldLight text-brand-brown flex items-center justify-center transition" title="العودة للرئيسية">
+            <i class="fa-solid fa-arrow-right text-sm"></i>
+          </button>
+        </header>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * SCREEN 2: HOME DASHBOARD
+     * ============================================================================
+     */
+    function renderHomeScreen() {
+      const unread = getUnreadCount();
+      const displayName = (state.user.name || '').trim() || 'ملف الطالب جديد';
+      const displayGrade = (state.user.grade || '').trim() || 'لم تُحدد المرحلة بعد';
+      const displayRank = (state.user.rank || '').trim() || 'لم تُحدد الرتبة بعد';
+
+      const cards = [
+        { id: 'attendance', title: 'الحضور والانصراف', icon: 'fa-calendar-check', badge: null },
+        { id: 'profile', title: 'بياناتي', icon: 'fa-id-card', badge: null },
+        { id: 'recitation', title: 'التسميع والتقييم', icon: 'fa-microphone-lines', badge: null },
+        { id: 'materials', title: 'المواد الدراسية', icon: 'fa-book-open', badge: null },
+        { id: 'notifications', title: 'الإشعارات', icon: 'fa-bell', badge: unread > 0 ? unread : null },
+        { id: 'points', title: 'سجل النقاط والمكافآت', icon: 'fa-award', badge: `${state.user.points} ن` }
+      ];
+
+      return `
+        <!-- Home Top Header -->
+        <header class="bg-white px-4 py-3 border-b border-brand-goldBorder/60 flex items-center justify-between sticky top-0 z-20">
+          <div class="flex items-center gap-2">
+            ${getLogoHTML('w-9 h-9')}
+            <span class="text-xs font-extrabold text-brand-brown truncate max-w-[175px]">مدرسة السيرافيم للألحان والتسبحة</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="navigate('notifications')" class="w-9 h-9 rounded-full bg-cream-soft hover:bg-cream-goldLight text-brand-brown flex items-center justify-center relative transition">
+              <i class="fa-regular fa-bell text-sm"></i>
+              ${unread > 0 ? `<span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white text-[10px] font-bold flex items-center justify-center">${unread}</span>` : ''}
+            </button>
+            <button onclick="logout()" class="w-9 h-9 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 flex items-center justify-center transition" title="تسجيل الخروج">
+              <i class="fa-solid fa-right-from-bracket text-xs"></i>
+            </button>
+          </div>
+        </header>
+
+        <div class="p-4 flex flex-col items-center">
+          <!-- Church Pill -->
+          <div class="inline-flex items-center gap-1.5 bg-cream-goldLight/70 border border-brand-goldBorder text-brand-brown px-3.5 py-1 rounded-full text-xs font-bold mb-5">
+            <i class="fa-solid fa-church text-brand-gold"></i>
+            <span>كنيسة السيدة العذراء مريم بالمنشاة</span>
+          </div>
+
+          <!-- Student Avatar & Welcome -->
+          <div class="flex flex-col items-center text-center mb-6">
+            ${getAvatarHTML('w-24 h-24 text-3xl mb-3')}
+            <h2 class="text-lg font-extrabold text-brand-brown">${state.user.name ? `أهلاً، ${displayName}` : displayName}</h2>
+            <div class="flex items-center gap-2 mt-1 text-xs font-bold text-stone-600">
+              <span class="w-2 h-2 rounded-full ${state.user.grade ? 'bg-emerald-600' : 'bg-stone-300'}"></span>
+              <span>${displayGrade}</span>
+              <span class="text-stone-300">•</span>
+              <span class="text-brand-gold">${displayRank}</span>
+            </div>
+          </div>
+
+          <!-- 2x3 Navigation Grid -->
+          <div class="w-full grid grid-cols-2 gap-3.5">
+            ${cards.map(card => `
+              <button onclick="navigate('${card.id}')" class="bg-white hover:bg-cream-soft/60 border border-brand-goldBorder/70 rounded-3xl p-5 flex flex-col items-center justify-center text-center shadow-card transition active:scale-[0.98] relative group">
+                ${card.badge ? `
+                  <span class="absolute top-3 left-3 ${card.id === 'notifications' ? 'bg-rose-600 text-white' : 'bg-cream-goldLight text-brand-brown border border-brand-goldBorder'} text-[10px] font-extrabold px-2 py-0.5 rounded-full">
+                    ${card.badge}
+                  </span>
+                ` : ''}
+                <div class="w-12 h-12 rounded-2xl bg-cream-soft group-hover:bg-cream-goldLight text-brand-brown flex items-center justify-center mb-3 transition">
+                  <i class="fa-solid ${card.icon} text-lg"></i>
+                </div>
+                <span class="text-xs font-extrabold text-brand-brown leading-snug">${card.title}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * SCREEN 3: ATTENDANCE (QR SCANNER & MANUAL 6-DIGIT CODE)
+     * ============================================================================
+     */
+    function renderAttendanceScreen() {
+      const st = state.attendance.status;
+      const displayName = (state.user.name || '').trim() || 'لم يتم إدخال اسم الطالب بعد';
+      const displayGrade = (state.user.grade || '').trim() || 'لم تُحدد المرحلة الدراسية بعد';
+
+      return `
+        ${renderSubHeader('الحضور والانصراف')}
+        <div class="p-4 space-y-4">
+          <!-- Student & Date Info Card -->
+          <div class="bg-white rounded-3xl p-4 border border-brand-goldBorder/80 shadow-card">
+            <div class="flex items-center justify-between text-[11px] font-bold mb-2">
+              <span class="bg-cream-soft text-brand-brown px-2.5 py-1 rounded-full">12 هاتور 1743 ش</span>
+              <span class="text-stone-500 flex items-center gap-1">
+                <span>اليوم السبت، 21 نوفمبر 2026</span>
+                <i class="fa-regular fa-calendar text-brand-gold"></i>
+              </span>
+            </div>
+            <div class="text-right mt-2">
+              <h2 class="text-base font-extrabold text-brand-brown">${displayName}</h2>
+              <p class="text-xs font-semibold text-stone-500">${displayGrade}</p>
+            </div>
+          </div>
+
+          <!-- QR Scanner Box -->
+          <div class="relative pt-2">
+            <span class="absolute top-0 right-4 z-10 bg-white border border-brand-goldBorder text-brand-brown text-[11px] font-extrabold px-3 py-0.5 rounded-full shadow-sm">
+              امسح كود الحضور
+            </span>
+            <div class="bg-gradient-to-b from-[#3A1C0E] to-[#1F0E06] rounded-3xl p-5 text-white flex flex-col items-center relative overflow-hidden border-2 border-brand-gold/50 shadow-md">
+              <!-- Top Camera Status Bar -->
+              <div class="w-full flex items-center justify-between mb-4">
+                <button onclick="simulateQrScan()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-xs" title="تبديل الكاميرا">
+                  <i class="fa-solid fa-camera-rotate"></i>
+                </button>
+                <div class="bg-black/40 border border-white/15 px-3 py-1 rounded-full text-[10px] font-semibold flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span>الكاميرا متصلة — أو استخدم الكود اليدوي</span>
+                </div>
+                <button onclick="showToast('تم تشغيل الفلاش المساعد', 'fa-bolt text-amber-300')" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-xs" title="الفلاش">
+                  <i class="fa-solid fa-bolt"></i>
+                </button>
+              </div>
+
+              <!-- QR Frame -->
+              <div onclick="simulateQrScan()" class="cursor-pointer relative w-44 h-44 flex items-center justify-center my-1 group">
+                <!-- Corner Brackets -->
+                <span class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-brand-gold rounded-tr-xl"></span>
+                <span class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-brand-gold rounded-tl-xl"></span>
+                <span class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-brand-gold rounded-br-xl"></span>
+                <span class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-brand-gold rounded-bl-xl"></span>
+
+                <!-- Simulated QR Code SVG -->
+                <div class="w-36 h-36 bg-white rounded-2xl p-2.5 flex items-center justify-center shadow-inner relative overflow-hidden">
+                  <svg viewBox="0 0 100 100" class="w-full h-full fill-brand-brown">
+                    <rect x="10" y="10" width="25" height="25" rx="3" fill="none" stroke="#4A2311" stroke-width="5"/>
+                    <rect x="17" y="17" width="11" height="11"/>
+                    <rect x="65" y="10" width="25" height="25" rx="3" fill="none" stroke="#4A2311" stroke-width="5"/>
+                    <rect x="72" y="17" width="11" height="11"/>
+                    <rect x="10" y="65" width="25" height="25" rx="3" fill="none" stroke="#4A2311" stroke-width="5"/>
+                    <rect x="17" y="72" width="11" height="11"/>
+                    <rect x="44" y="12" width="6" height="6"/><rect x="52" y="20" width="6" height="12"/>
+                    <rect x="42" y="42" width="16" height="16" rx="2"/><rect x="12" y="45" width="12" height="6"/>
+                    <rect x="68" y="44" width="18" height="6"/><rect x="46" y="68" width="8" height="18"/>
+                    <rect x="64" y="65" width="12" height="12"/><rect x="80" y="78" width="10" height="10"/>
+                  </svg>
+                  <!-- Animated Scan Laser -->
+                  <div class="scanner-laser absolute left-1 right-1 h-0.5 bg-emerald-500 shadow-[0_0_8px_#10B981]"></div>
+                </div>
+              </div>
+
+              <p class="text-[11px] font-bold text-brand-gold mt-2">مدرسة السيرافيم بالمنشاة</p>
+              <p class="text-xs font-semibold text-white/90 mt-0.5">اضغط على الكود لمحاكاة المسح الفوري بالكاميرا</p>
+            </div>
+          </div>
+
+          <!-- Interactive Status Stepper -->
+          <div>
+            <p class="text-[11px] font-bold text-stone-500 mb-1.5">معاينة الحالات التفاعلية:</p>
+            <div class="bg-white border border-brand-goldBorder rounded-2xl p-1 grid grid-cols-3 gap-1 text-center text-xs font-bold">
+              <button onclick="setAttendanceState('pending')" class="py-2 rounded-xl transition ${st === 'pending' ? 'bg-brand-brown text-white shadow' : 'text-stone-500 hover:bg-cream-soft'}">
+                قيد الانتظار
+              </button>
+              <button onclick="setAttendanceState('checked_in')" class="py-2 rounded-xl transition ${st === 'checked_in' ? 'bg-emerald-700 text-white shadow' : 'text-stone-500 hover:bg-cream-soft'}">
+                تم الحضور
+              </button>
+              <button onclick="setAttendanceState('checked_out')" class="py-2 rounded-xl transition ${st === 'checked_out' ? 'bg-amber-700 text-white shadow' : 'text-stone-500 hover:bg-cream-soft'}">
+                تم الانصراف
+              </button>
+            </div>
+
+            <!-- Current Status Card -->
+            <div class="bg-white border border-brand-goldBorder/80 rounded-2xl p-4 mt-2.5 flex items-center justify-between shadow-card">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full ${st === 'pending' ? 'bg-amber-500' : st === 'checked_in' ? 'bg-emerald-600' : 'bg-blue-600'}"></span>
+                <div>
+                  <p class="text-xs font-extrabold text-brand-brown">
+                    ${st === 'pending' ? 'لم يتم تسجيل الحضور اليوم' : st === 'checked_in' ? 'تم تسجيل الحضور في الموعد (+10 نقاط)' : 'تم تسجيل الحضور والانصراف بنجاح'}
+                  </p>
+                  ${state.attendance.checkInTime ? `<p class="text-[10px] text-stone-500 mt-0.5">وقت الحضور: ${state.attendance.checkInTime}</p>` : ''}
+                </div>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-cream-soft flex items-center justify-center text-brand-brown">
+                <i class="fa-solid ${st === 'pending' ? 'fa-hourglass-half' : st === 'checked_in' ? 'fa-circle-check text-emerald-600' : 'fa-door-open text-blue-600'}"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="grid grid-cols-2 gap-2.5">
+            <button onclick="simulateQrScan()" class="bg-white hover:bg-cream-soft border border-brand-goldBorder text-brand-brown text-xs font-bold py-3 rounded-2xl shadow-card transition">
+              <i class="fa-solid fa-qrcode ml-1 text-brand-gold"></i>
+              <span>مسح رمز الحضور</span>
+            </button>
+            <button onclick="recordCheckOut()" class="bg-white hover:bg-cream-soft border border-brand-goldBorder text-brand-brown text-xs font-bold py-3 rounded-2xl shadow-card transition">
+              <i class="fa-solid fa-person-walking-arrow-right ml-1 text-brand-gold"></i>
+              <span>تسجيل الانصراف</span>
+            </button>
+          </div>
+
+          <!-- Manual 6-Digit Code Entry -->
+          <div class="bg-white border border-brand-goldBorder rounded-3xl p-4 shadow-card">
+            <p class="text-xs font-bold text-brand-gold text-center mb-2">
+              <i class="fa-regular fa-keyboard ml-1"></i>
+              مشكلة في الكاميرا؟ إدخال الكود يدوياً
+            </p>
+            <label class="block text-[11px] font-bold text-stone-600 mb-1.5">اكتب رمز الحضور المعروض (6 أرقام):</label>
+            <form onsubmit="handleManualCode(event)" class="flex items-center gap-2">
+              <input id="manual-code-input" type="text" maxlength="6" value="" placeholder="------"
+                class="flex-1 bg-cream-soft border border-brand-goldBorder rounded-xl py-2.5 px-3 text-center text-base font-extrabold tracking-[0.25em] text-brand-brown focus:outline-none focus:border-brand-gold" dir="ltr" />
+              <button type="submit" class="bg-brand-brown hover:bg-brand-brownDark text-white font-bold text-xs px-5 py-3 rounded-xl shadow transition">
+                تأكيد
+              </button>
+            </form>
+          </div>
+
+          <p class="text-center text-[11px] font-semibold text-stone-400 italic pt-1">
+            «رتلوا لإلهنا رتلوا، رتلوا لملكنا رتلوا» — مزمور 47
+          </p>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * SCREEN 4: RECITATION & EVALUATION
+     * ============================================================================
+     */
+    function renderRecitationScreen() {
+      const sub = state.subjects[state.activeSubjectId];
+      const filter = state.recitationFilter;
+
+      const filteredTasks = sub.tasks.filter(t => {
+        if (filter === 'available') return t.status === 'available';
+        if (filter === 'closed') return t.status !== 'available';
+        return true;
+      });
+
+      return `
+        ${renderSubHeader('التسميع والاختبارات')}
+        <div class="p-4 space-y-4">
+          <!-- Closest Deadline Alert -->
+          <div class="bg-cream-goldLight/60 border border-brand-goldBorder rounded-2xl p-3.5 flex items-center justify-between">
+            <div>
+              <p class="text-xs font-extrabold text-brand-brown">سجل التسميع والاختبارات جديد</p>
+              <p class="text-[11px] font-semibold text-stone-600 mt-0.5">لم يتم إضافة مهام تسميع أو رصد درجات بعد</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-white border border-brand-goldBorder text-brand-gold flex items-center justify-center">
+              <i class="fa-regular fa-calendar-check"></i>
+            </div>
+          </div>
+
+          <!-- Subject Tabs Grid -->
+          <div>
+            <h2 class="text-xs font-extrabold text-brand-brown mb-2">اختر المادة لعرض التسميعات والاختبارات:</h2>
+            <div class="grid grid-cols-2 gap-2.5">
+              ${Object.values(state.subjects).map(s => {
+                const active = s.id === state.activeSubjectId;
+                return `
+                  <button onclick="selectRecitationSubject('${s.id}')" class="p-3.5 rounded-2xl border text-right transition flex flex-col justify-between ${active ? 'bg-white border-2 border-brand-gold shadow-sm' : 'bg-white/70 border-brand-goldBorder/60 hover:bg-white'}">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="w-8 h-8 rounded-xl ${active ? 'bg-brand-brown text-white' : 'bg-cream-soft text-brand-brown'} flex items-center justify-center text-xs">
+                        <i class="fa-solid ${s.icon}"></i>
+                      </div>
+                      <span class="text-[10px] font-bold text-brand-gold">المهام (${s.tasks.length})</span>
+                    </div>
+                    <p class="text-xs font-extrabold text-brand-brown">${s.name}</p>
+                    <p class="text-[10px] text-stone-500 line-clamp-1 mt-0.5">${s.subtitle}</p>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Active Subject Tasks Section -->
+          <div class="bg-white border border-brand-goldBorder rounded-3xl p-4 shadow-card space-y-3">
+            <div class="flex items-center justify-between border-b border-cream-soft pb-3">
+              <div>
+                <h3 class="text-sm font-extrabold text-brand-brown">تسميعات مادة ${sub.name}</h3>
+                <p class="text-[11px] text-stone-500">تسليم التسجيلات الصوتية ومتابعة التقييم</p>
+              </div>
+              <div class="w-10 h-10 rounded-2xl bg-brand-brown text-white flex items-center justify-center">
+                <i class="fa-solid ${sub.icon}"></i>
+              </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="grid grid-cols-3 gap-1.5 bg-cream-soft p-1 rounded-xl text-[11px] font-bold">
+              <button onclick="setRecitationFilter('all')" class="py-1.5 rounded-lg transition ${filter === 'all' ? 'bg-brand-brown text-white' : 'text-brand-brown'}">الكل</button>
+              <button onclick="setRecitationFilter('available')" class="py-1.5 rounded-lg transition ${filter === 'available' ? 'bg-brand-brown text-white' : 'text-brand-brown'}">المتاحة فقط</button>
+              <button onclick="setRecitationFilter('closed')" class="py-1.5 rounded-lg transition ${filter === 'closed' ? 'bg-brand-brown text-white' : 'text-brand-brown'}">المكتملة والمغلقة</button>
+            </div>
+
+            <!-- Tasks List -->
+            <div class="space-y-3 pt-1">
+              ${filteredTasks.length === 0 ? `
+                <div class="text-center py-8 px-3 bg-cream-bg/60 rounded-2xl border border-dashed border-brand-goldBorder">
+                  <i class="fa-solid fa-microphone-slash text-stone-300 text-2xl mb-2"></i>
+                  <p class="text-xs font-bold text-stone-500">لا توجد مهام تسميع أو درجات مسجلة حالياً في مادة ${sub.name}</p>
+                  <p class="text-[10px] text-stone-400 mt-1">سيتم عرض المهام فور إضافتها من إدارة المدرسة أو الخدام</p>
+                </div>
+              ` : filteredTasks.map(task => `
+                <div class="border ${task.status === 'available' ? 'border-brand-gold bg-cream-bg/50' : 'border-brand-goldBorder/70 bg-white'} rounded-2xl p-3.5 space-y-2.5">
+                  <div class="flex items-start justify-between gap-2">
+                    <h4 class="text-xs font-extrabold text-brand-brown leading-relaxed">${task.title}</h4>
+                    ${task.score ? `
+                      <span class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full shrink-0">
+                        <i class="fa-regular fa-circle-check ml-1"></i>الدرجة: ${task.score}
+                      </span>
+                    ` : `
+                      <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shrink-0">
+                        متاح الآن
+                      </span>
+                    `}
+                  </div>
+
+                  <p class="text-[11px] text-stone-500">${task.dueDate}</p>
+
+                  ${task.status === 'available' ? `
+                    <button onclick="openRecitationRecorder('${sub.id}', '${task.id}')" class="w-full bg-brand-brown hover:bg-brand-brownDark text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 shadow transition">
+                      <i class="fa-solid fa-microphone"></i>
+                      <span>تسجيل وإرسال التسميع الصوتي</span>
+                    </button>
+                  ` : `
+                    <div class="w-full bg-stone-100 text-stone-500 text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 border border-stone-200">
+                      <i class="fa-solid fa-lock text-[11px]"></i>
+                      <span>${task.status === 'completed' ? 'تم استهلاك المحاولة والتقييم' : 'انتهى الموعد'}</span>
+                    </div>
+                  `}
+
+                  <div class="text-[10px] text-stone-400 flex items-center gap-1 pt-0.5">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>${task.weekLabel}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * SCREEN 5: STUDY MATERIALS (PDF NOTES)
+     * ============================================================================
+     */
+    function renderMaterialsScreen() {
+      const sub = state.subjects[state.activeSubjectId];
+      const displayGrade = (state.user.grade || '').trim() || 'المرحلة الدراسية';
+      const displayTeacher = (sub.teacher || '').trim() || 'لم يُحدد بعد';
+
+      return `
+        ${renderSubHeader('المواد الدراسية')}
+        <div class="p-4 space-y-4">
+          <!-- 2x2 Subject Cards -->
+          <div class="grid grid-cols-2 gap-3">
+            ${Object.values(state.subjects).map(s => {
+              const active = s.id === state.activeSubjectId;
+              return `
+                <button onclick="selectRecitationSubject('${s.id}')" class="bg-white rounded-3xl p-4 border ${active ? 'border-2 border-brand-gold shadow-md' : 'border-brand-goldBorder/70'} flex flex-col items-center text-center transition">
+                  <div class="w-11 h-11 rounded-2xl ${active ? 'bg-brand-brown text-white' : 'bg-cream-soft text-brand-brown'} flex items-center justify-center mb-2">
+                    <i class="fa-solid ${s.icon} text-base"></i>
+                  </div>
+                  <h3 class="text-sm font-extrabold text-brand-brown">${s.name}</h3>
+                  <span class="text-[11px] font-semibold text-stone-500 mt-0.5">${s.materials.length} عنصر</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Active Material Details -->
+          <div class="bg-white border border-brand-goldBorder rounded-3xl p-4 shadow-card space-y-3.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-11 h-11 rounded-2xl bg-brand-brown text-white flex items-center justify-center">
+                  <i class="fa-solid ${sub.icon} text-base"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-extrabold text-brand-brown">مادة ${sub.name}</h3>
+                  <p class="text-[11px] font-semibold text-stone-500">
+                    <i class="fa-regular fa-user ml-1 text-brand-gold"></i>المسؤول: ${displayTeacher}
+                  </p>
+                </div>
+              </div>
+              <span class="bg-cream-goldLight text-brand-brown text-[11px] font-bold px-3 py-1 rounded-full border border-brand-goldBorder">
+                ${displayGrade}
+              </span>
+            </div>
+
+            <!-- PDF List -->
+            <div class="space-y-2.5 pt-2 border-t border-cream-soft">
+              ${sub.materials.length === 0 ? `
+                <div class="text-center py-7 px-3 bg-cream-bg/60 rounded-2xl border border-dashed border-brand-goldBorder">
+                  <i class="fa-regular fa-folder-open text-stone-300 text-2xl mb-2"></i>
+                  <p class="text-xs font-bold text-stone-500">لا توجد مذكرات أو ملفات PDF مرفوعة حالياً في مادة ${sub.name}</p>
+                  <p class="text-[10px] text-stone-400 mt-1">التطبيق جديد — ستظهر الملفات فور رفعها من الإدارة</p>
+                </div>
+              ` : sub.materials.map(mat => `
+                <div class="bg-cream-bg/80 border border-brand-goldBorder/80 rounded-2xl p-3 flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                      <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-extrabold text-brand-brown truncate">${mat.title}</p>
+                      <div class="flex items-center gap-2 text-[10px] text-stone-500 mt-0.5">
+                        <span class="bg-cream-goldLight text-brand-brown px-2 py-0.5 rounded font-bold">${mat.type}</span>
+                        <span>${mat.date}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    <button onclick="openPdfPreview('${sub.id}', '${mat.id}')" class="bg-brand-brown text-white text-[11px] font-bold px-2.5 py-2 rounded-xl hover:bg-brand-brownDark transition" title="فتح المذكرة">
+                      فتح
+                    </button>
+                    <button onclick="showToast('جاري تحميل ${mat.title}...', 'fa-download text-brand-gold')" class="w-8 h-8 rounded-xl bg-white border border-brand-goldBorder text-brand-brown flex items-center justify-center hover:bg-cream-soft transition" title="تحميل">
+                      <i class="fa-solid fa-download text-xs"></i>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * SCREEN 6: POINTS, WEEKLY SEALS & REWARDS WHEEL
+     * ============================================================================
+     */
+    function renderPointsScreen() {
+      const earnedSealsCount = state.seals.filter(s => s.earned).length;
+      const totalDeductions = state.deductions.reduce((acc, d) => acc + d.points, 0);
+
+      return `
+        ${renderSubHeader('سجل النقاط والأختام')}
+        <div class="p-4 space-y-4">
+          <!-- Total Points Hero Banner -->
+          <div class="bg-gradient-to-l from-brand-brown to-brand-brownLight text-white rounded-3xl p-5 flex items-center justify-between shadow-md">
+            <div>
+              <p class="text-xs text-amber-200 font-semibold">إجمالي رصيدك الحالي</p>
+              <h2 class="text-3xl font-extrabold mt-1">${state.user.points} <span class="text-sm font-bold text-amber-300">نقطة</span></h2>
+            </div>
+            <div class="w-14 h-14 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center text-2xl text-amber-300">
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+          </div>
+
+          <!-- Deductions Collapsible Card -->
+          <details class="bg-white border border-brand-goldBorder rounded-3xl p-4 shadow-card group">
+            <summary class="list-none flex items-center justify-between cursor-pointer">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center">
+                  <i class="fa-solid fa-circle-minus"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-extrabold text-brand-brown">الخصومات</span>
+                    <span class="bg-rose-100 text-rose-700 text-[11px] font-extrabold px-2 py-0.5 rounded-full">${totalDeductions}</span>
+                  </div>
+                  <p class="text-[11px] text-stone-500 mt-0.5">عدد الخصومات: ${state.deductions.length}</p>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-down text-stone-400 text-xs group-open:rotate-180 transition"></i>
+            </summary>
+            <div class="mt-3 pt-3 border-t border-cream-soft space-y-2">
+              ${state.deductions.length === 0 ? `
+                <p class="text-center text-xs text-stone-400 py-2">لا توجد خصومات مسجلة (0)</p>
+              ` : state.deductions.map(d => `
+                <div class="flex items-center justify-between text-xs bg-rose-50/60 p-2.5 rounded-xl">
+                  <span class="font-bold text-brand-brown">${d.title}</span>
+                  <span class="font-extrabold text-rose-700">${d.points} نقاط (${d.date})</span>
+                </div>
+              `).join('')}
+            </div>
+          </details>
+
+          <!-- Seal Rule Explanation -->
+          <div class="bg-white border border-brand-goldBorder/80 rounded-3xl p-4 shadow-card flex items-start gap-3">
+            <i class="fa-solid fa-circle-info text-brand-gold mt-0.5"></i>
+            <div>
+              <h3 class="text-xs font-extrabold text-brand-brown">البونص والخصم لا تؤثر على الختم</h3>
+              <p class="text-[11px] text-stone-600 leading-relaxed mt-1">
+                الختم يُمنح عند تحقيق المتطلبات الستة فقط: الحضور في الموعد، ودرجة كاملة في المواد الأربع، والقداس الهادئ — في نفس الأسبوع.
+              </p>
+            </div>
+          </div>
+
+          <!-- Weekly Seals Grid -->
+          <div class="bg-white border border-brand-goldBorder rounded-3xl p-4 shadow-card space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-stamp text-brand-gold"></i>
+                <h3 class="text-sm font-extrabold text-brand-brown">الأختام الأسبوعية</h3>
+              </div>
+              <span class="bg-cream-soft border border-brand-goldBorder text-brand-brown text-xs font-extrabold px-3 py-0.5 rounded-full">
+                ${earnedSealsCount} ختم
+              </span>
+            </div>
+
+            ${state.seals.length === 0 ? `
+              <div class="text-center py-5 bg-cream-bg/60 rounded-2xl border border-dashed border-brand-goldBorder">
+                <p class="text-xs font-bold text-stone-500">لا توجد أختام أسبوعية مسجلة حالياً (0 ختم)</p>
+                <p class="text-[10px] text-stone-400 mt-1">تبدأ الأختام بالظهور عند استيفاء متطلبات الأسابيع الدراسية</p>
+              </div>
+            ` : `
+              <div class="grid grid-cols-4 gap-2 pt-1">
+                ${state.seals.slice(0, 4).map(seal => `
+                  <div class="flex flex-col items-center text-center">
+                    <div class="relative mb-1.5">
+                      ${seal.earned ? `
+                        ${getLogoHTML('w-14 h-14')}
+                        <span class="w-4 h-4 rounded-full bg-brand-gold text-white text-[9px] flex items-center justify-center absolute -bottom-0.5 -right-0.5 border border-white">
+                          <i class="fa-solid fa-check"></i>
+                        </span>
+                      ` : `
+                        <div class="w-14 h-14 rounded-full border-2 border-dashed border-stone-300 bg-cream-soft/50 flex items-center justify-center text-stone-400">
+                          <i class="fa-solid fa-ban"></i>
+                        </div>
+                      `}
+                    </div>
+                    <span class="text-[10px] font-bold text-stone-600 leading-tight">${seal.week}</span>
+                  </div>
+                `).join('')}
+              </div>
+
+              <!-- Earned Dates Pills -->
+              <div class="flex flex-wrap gap-1.5 pt-2 border-t border-cream-soft">
+                ${state.seals.filter(s => s.earned).map(s => `
+                  <span class="bg-cream-goldLight/60 border border-brand-goldBorder text-brand-brown text-[10px] font-bold px-2.5 py-1 rounded-full">
+                    <i class="fa-regular fa-circle-check text-brand-gold ml-1"></i>${s.week.replace('أسبوع ', '')}
+                  </span>
+                `).join('')}
+              </div>
+            `}
+          </div>
+
+          <!-- Rewards Wheel Card -->
+          <div class="bg-white border-2 border-brand-gold rounded-3xl p-4 shadow-soft space-y-3 relative">
+            <span class="absolute -top-3 right-4 bg-cream-goldLight border border-brand-gold text-brand-brown text-[11px] font-extrabold px-3 py-0.5 rounded-full">
+              4 أختام = لفة مكافآت
+            </span>
+
+            <div class="flex items-center justify-between pt-1">
+              <div>
+                <h3 class="text-sm font-extrabold text-brand-brown">عجلة المكافآت</h3>
+                <p class="text-[11px] text-stone-500">الجوائز التشجيعية الأسبوعية</p>
+              </div>
+              <span class="bg-amber-100 border border-amber-300 text-amber-900 text-xs font-extrabold px-3 py-1 rounded-full">
+                لفات متاحة: ${state.user.spinsAvailable}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 bg-cream-bg rounded-2xl p-3.5 border border-brand-goldBorder/70">
+              <div class="space-y-1.5 flex-1">
+                <p class="text-xs font-extrabold text-brand-brown">كل 4 أختام = لفة واحدة على عجلة المكافآت</p>
+                <p class="text-[11px] text-stone-600 leading-relaxed">
+                  ${state.user.spinsAvailable > 0 ? 'مبروك! لديك لفة متاحة — اضغط على زر التدوير الآن!' : 'أكمل 4 أختام جديدة للحصول على لفة إضافية.'}
+                </p>
+                <div class="flex items-center gap-2 pt-1 text-[10px] font-bold">
+                  <span class="bg-white px-2.5 py-1 rounded-lg border border-brand-goldBorder">مُكتسبة: ${state.user.spinsAvailable + state.user.spinsUsed}</span>
+                  <span class="bg-white px-2.5 py-1 rounded-lg border border-brand-goldBorder">مُستخدمة: ${state.user.spinsUsed}</span>
+                </div>
+              </div>
+
+              <button onclick="openWheelModal()" class="w-20 h-20 rounded-full bg-gradient-to-br from-brand-gold to-brand-brown text-white flex flex-col items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition shrink-0 border-4 border-amber-200">
+                <i class="fa-solid fa-dharmachakra text-xl mb-0.5"></i>
+                <span class="text-[11px] font-extrabold">${state.user.spinsAvailable > 0 ? 'لف العجلة' : 'معاينة'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * SCREEN 7: NOTIFICATIONS
+     * ============================================================================
+     */
+    function renderNotificationsScreen() {
+      const unread = getUnreadCount();
+
+      return `
+        ${renderSubHeader('الإشعارات')}
+        <div class="p-4 space-y-3.5">
+          <!-- Unread Counter Banner -->
+          <div class="bg-white border border-brand-goldBorder rounded-3xl p-4 flex items-center justify-between shadow-card">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-cream-goldLight text-brand-gold flex items-center justify-center text-lg">
+                <i class="fa-regular fa-bell"></i>
+              </div>
+              <div>
+                <p class="text-lg font-extrabold text-brand-brown leading-none">${unread}</p>
+                <p class="text-[11px] font-semibold text-stone-500 mt-1">إشعارات غير مقروءة</p>
+              </div>
+            </div>
+            <button onclick="markAllNotificationsRead()" class="bg-brand-brown hover:bg-brand-brownDark text-white text-xs font-bold px-3.5 py-2.5 rounded-xl transition">
+              تعليم الكل كمقروء
+            </button>
+          </div>
+
+          <!-- Push Notifications Activation -->
+          <div class="bg-white border border-brand-goldBorder/80 rounded-2xl p-3.5 flex items-center justify-between gap-2 shadow-card">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-cream-soft text-brand-brown flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-bell-concierge"></i>
+              </div>
+              <div>
+                <h3 class="text-xs font-extrabold text-brand-brown">تنبيهات الهاتف</h3>
+                <p class="text-[10px] text-stone-500">فعّل الإشعارات ليصلك تنبيه فور نزول محتوى أو اختبار جديد.</p>
+              </div>
+            </div>
+            <button onclick="showToast('تم تفعيل تنبيهات الهاتف بنجاح', 'fa-bell text-brand-gold')" class="bg-brand-brown text-white text-xs font-bold px-3.5 py-2 rounded-xl shrink-0">
+              تفعيل
+            </button>
+          </div>
+
+          <!-- School WhatsApp Channel -->
+          <div class="bg-white border border-brand-goldBorder/80 rounded-2xl p-3.5 flex items-center justify-between gap-2 shadow-card">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+              </div>
+              <div>
+                <h3 class="text-xs font-extrabold text-brand-brown">قناة واتساب المدرسة</h3>
+                <p class="text-[10px] text-stone-500">رسائل الإدارة وإعلانات مدرسة السيرافيم بالمنشاة</p>
+              </div>
+            </div>
+            <button onclick="showToast('تم فتح رابط قناة مدرسة السيرافيم على واتساب', 'fa-brands fa-whatsapp text-emerald-400')" class="bg-cream-soft hover:bg-emerald-50 border border-brand-goldBorder text-brand-brown text-xs font-bold px-3 py-2 rounded-xl shrink-0">
+              فتح القناة
+            </button>
+          </div>
+
+          <!-- Notifications List -->
+          <div class="pt-1 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-extrabold text-brand-brown">كل الإشعارات</h3>
+              ${unread > 0 ? `<span class="bg-cream-goldLight text-brand-brown text-[10px] font-bold px-2.5 py-0.5 rounded-full">غير مقروء (${unread})</span>` : ''}
+            </div>
+
+            ${state.notifications.length === 0 ? `
+              <div class="bg-white border border-dashed border-brand-goldBorder rounded-3xl p-7 text-center space-y-2 shadow-card">
+                <div class="w-12 h-12 rounded-2xl bg-cream-soft text-brand-gold flex items-center justify-center mx-auto text-lg">
+                  <i class="fa-regular fa-bell-slash"></i>
+                </div>
+                <h4 class="text-xs font-extrabold text-brand-brown">لا توجد إشعارات حالياً</h4>
+                <p class="text-[11px] text-stone-500 leading-relaxed">
+                  سجل الإشعارات فارغ — سيتم عرض التنبيهات الجديدة فور إرسالها من الإدارة.
+                </p>
+              </div>
+            ` : state.notifications.map(n => `
+              <div onclick="toggleNotificationRead('${n.id}')" class="cursor-pointer bg-white border ${n.unread ? 'border-brand-gold shadow-sm' : 'border-brand-goldBorder/60'} rounded-2xl p-3.5 flex items-start justify-between gap-3 relative transition">
+                ${n.unread ? `<span class="w-2.5 h-2.5 rounded-full bg-rose-600 absolute top-3 left-3"></span>` : ''}
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-cream-soft text-brand-gold flex items-center justify-center shrink-0 mt-0.5">
+                    <i class="fa-solid fa-bullhorn text-sm"></i>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h4 class="text-xs font-extrabold text-brand-brown">${n.title}</h4>
+                      <span class="text-[10px] text-stone-400">${n.time}</span>
+                    </div>
+                    <p class="text-xs text-stone-600 mt-1 leading-relaxed">${n.body}</p>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * SCREEN 8: PROFILE (بياناتي)
+     * ============================================================================
+     */
+    function renderProfileScreen() {
+      const age = calculateAge(state.user.birthDate);
+      const displayName = (state.user.name || '').trim() || 'لم يُدخل الاسم بعد';
+      const ranks = ['إبصالتس', 'أغنسطس', 'إيبودياكون', 'شماس', 'بدون رتبة'];
+      const grades = ['حضانة', 'أولى وتانية', 'تالتة ورابعة', 'خامسة وستة', 'إعدادي', 'ثانوي', 'جامعة'];
+
+      return `
+        ${renderSubHeader('بياناتي')}
+        <div class="p-4 space-y-4">
+          <!-- Avatar & Name Header -->
+          <div class="flex flex-col items-center text-center pt-1">
+            <label for="profile-avatar-input" class="cursor-pointer relative group">
+              ${getAvatarHTML('w-24 h-24 text-3xl')}
+              <span class="w-8 h-8 rounded-full bg-brand-brown text-white flex items-center justify-center absolute bottom-0 left-0 border-2 border-white shadow">
+                <i class="fa-solid fa-camera text-xs"></i>
+              </span>
+            </label>
+            <input id="profile-avatar-input" type="file" accept="image/*" class="hidden" onchange="handleProfileAvatarChange(event)" />
+            <h2 class="text-base font-extrabold text-brand-brown mt-3">${displayName}</h2>
+          </div>
+
+          <!-- Personal Details Form Card -->
+          <form onsubmit="handleSaveProfile(event)" class="bg-white border border-brand-goldBorder rounded-3xl p-4 shadow-card space-y-3">
+            <div class="flex items-center gap-2 pb-2 border-b border-cream-soft">
+              <i class="fa-regular fa-id-badge text-brand-gold"></i>
+              <h3 class="text-xs font-extrabold text-brand-brown">البيانات الشخصية</h3>
+            </div>
+
+            <!-- Full Name -->
+            <div class="flex items-center justify-between py-1.5 border-b border-cream-soft/80 gap-2">
+              <span class="text-xs font-bold text-stone-500 shrink-0"><i class="fa-regular fa-user ml-1.5 text-brand-gold"></i>الاسم الكامل</span>
+              <input id="prof-name" type="text" value="${state.user.name}" placeholder="غير مسجل" class="text-xs font-extrabold text-brand-brown text-left bg-transparent focus:bg-cream-soft px-2 py-1 rounded-lg focus:outline-none w-full" />
+            </div>
+
+            <!-- Phone -->
+            <div class="flex items-center justify-between py-1.5 border-b border-cream-soft/80 gap-2">
+              <span class="text-xs font-bold text-stone-500 shrink-0"><i class="fa-solid fa-phone ml-1.5 text-brand-gold"></i>رقم الهاتف</span>
+              <div class="flex items-center gap-1.5">
+                <input id="prof-phone" type="tel" value="${state.user.phone}" placeholder="غير مسجل" class="text-xs font-extrabold text-brand-brown text-left bg-transparent focus:bg-cream-soft px-2 py-1 rounded-lg focus:outline-none w-28" dir="ltr" />
+                <button type="button" onclick="copyText(document.getElementById('prof-phone').value)" class="text-brand-gold hover:text-brand-brown text-xs" title="نسخ الرقم">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- WhatsApp -->
+            <div class="flex items-center justify-between py-1.5 border-b border-cream-soft/80 gap-2">
+              <span class="text-xs font-bold text-stone-500 shrink-0"><i class="fa-brands fa-whatsapp ml-1.5 text-emerald-600"></i>رقم الواتساب</span>
+              <div class="flex items-center gap-1.5">
+                <input id="prof-whatsapp" type="tel" value="${state.user.whatsapp}" placeholder="غير مسجل" class="text-xs font-extrabold text-brand-brown text-left bg-transparent focus:bg-cream-soft px-2 py-1 rounded-lg focus:outline-none w-28" dir="ltr" />
+              </div>
+            </div>
+
+            <!-- Parent Phone -->
+            <div class="flex items-center justify-between py-1.5 border-b border-cream-soft/80 gap-2">
+              <span class="text-xs font-bold text-stone-500 shrink-0"><i class="fa-solid fa-users ml-1.5 text-brand-gold"></i>رقم ولي الأمر</span>
+              <input id="prof-parent" type="tel" value="${state.user.parentPhone}" placeholder="غير مسجل" class="text-xs font-extrabold text-brand-brown text-left bg-transparent focus:bg-cream-soft px-2 py-1 rounded-lg focus:outline-none w-28" dir="ltr" />
+            </div>
+
+            <!-- Birth Date -->
+            <div class="flex items-center justify-between py-1.5 border-b border-cream-soft/80 gap-2">
+              <span class="text-xs font-bold text-stone-500 shrink-0"><i class="fa-solid fa-cake-candles ml-1.5 text-brand-gold"></i>تاريخ الميلاد</span>
+              <div class="flex items-center gap-1.5">
+                ${age !== null ? `<span class="text-[10px] text-stone-400">(${age} سنة)</span>` : ''}
+                <input id="prof-birth" type="date" value="${state.user.birthDate}" class="text-xs font-extrabold text-brand-brown bg-transparent focus:bg-cream-soft px-1.5 py-1 rounded-lg focus:outline-none" dir="ltr" />
+              </div>
+            </div>
+
+            <!-- Gender -->
+            <div class="flex items-center justify-between py-1.5 border-b border-cream-soft/80 gap-2">
+              <span class="text-xs font-bold text-stone-500 shrink-0"><i class="fa-solid fa-venus-mars ml-1.5 text-brand-gold"></i>الجنس</span>
+              <span class="text-xs font-extrabold text-brand-brown">${state.user.gender || 'غير محدد'}</span>
+            </div>
+
+            <!-- Ecclesiastical Rank -->
+            <div class="flex items-center justify-between py-1.5 border-b border-cream-soft/80 gap-2">
+              <span class="text-xs font-bold text-stone-500 shrink-0"><i class="fa-solid fa-church ml-1.5 text-brand-gold"></i>الرتبة الكنسية</span>
+              <select id="prof-rank" class="bg-cream-goldLight/70 border border-brand-goldBorder text-brand-brown text-xs font-extrabold px-2.5 py-1 rounded-xl focus:outline-none">
+                <option value="" ${!state.user.rank ? 'selected' : ''}>غير محدد</option>
+                ${ranks.map(r => `<option value="${r}" ${r === state.user.rank ? 'selected' : ''}>${r}</option>`).join('')}
+              </select>
+            </div>
+
+            <!-- Grade -->
+            <div class="flex items-center justify-between py-1.5 border-b border-cream-soft/80 gap-2">
+              <span class="text-xs font-bold text-stone-500 shrink-0"><i class="fa-solid fa-graduation-cap ml-1.5 text-brand-gold"></i>الفصل الدراسي</span>
+              <select id="prof-grade" class="bg-cream-soft border border-brand-goldBorder text-brand-brown text-xs font-extrabold px-2.5 py-1 rounded-xl focus:outline-none">
+                <option value="" ${!state.user.grade ? 'selected' : ''}>غير محدد</option>
+                ${grades.map(g => `<option value="${g}" ${g === state.user.grade ? 'selected' : ''}>${g}</option>`).join('')}
+              </select>
+            </div>
+
+            <!-- Password Row -->
+            <div class="flex items-center justify-between py-1.5 gap-2">
+              <span class="text-xs font-bold text-stone-500 shrink-0"><i class="fa-solid fa-lock ml-1.5 text-brand-gold"></i>كلمة المرور</span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-stone-400">${state.user.password ? '••••••••' : 'غير محددة'}</span>
+                <button type="button" onclick="openChangePasswordModal()" class="bg-brand-brown hover:bg-brand-brownDark text-white text-[11px] font-bold px-3 py-1 rounded-lg transition">
+                  تغيير
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-brand-brown hover:bg-brand-brownDark text-white font-bold text-xs py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 transition mt-2">
+              <i class="fa-regular fa-circle-check"></i>
+              <span>حفظ التعديلات</span>
+            </button>
+          </form>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * INTERACTIVE HANDLERS & MODALS
+     * ============================================================================
+     */
+    function switchAuthTab(tab) {
+      state.authTab = tab;
+      render();
+    }
+
+    function togglePasswordVisibility(inputId, btn) {
+      const inp = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash';
+      } else {
+        inp.type = 'password';
+        icon.className = 'fa-regular fa-eye';
+      }
+    }
+
+    function selectGender(g) {
+      document.getElementById('reg-gender').value = g;
+      const maleBtn = document.getElementById('btn-gender-male');
+      const femaleBtn = document.getElementById('btn-gender-female');
+      if (g === 'ذكر') {
+        maleBtn.className = 'py-2.5 rounded-xl border-2 border-brand-gold bg-cream-goldLight/60 text-brand-brown text-xs font-bold flex items-center justify-center gap-1.5';
+        femaleBtn.className = 'py-2.5 rounded-xl border border-brand-goldBorder bg-cream-soft/60 text-stone-600 text-xs font-bold flex items-center justify-center gap-1.5';
+      } else {
+        femaleBtn.className = 'py-2.5 rounded-xl border-2 border-brand-gold bg-cream-goldLight/60 text-brand-brown text-xs font-bold flex items-center justify-center gap-1.5';
+        maleBtn.className = 'py-2.5 rounded-xl border border-brand-goldBorder bg-cream-soft/60 text-stone-600 text-xs font-bold flex items-center justify-center gap-1.5';
+      }
+    }
+
+    function syncWhatsappIfChecked() {
+      const same = document.getElementById('reg-same-wa')?.checked;
+      const phone = document.getElementById('reg-phone')?.value || '';
+      const wa = document.getElementById('reg-whatsapp');
+      if (same && wa) {
+        wa.value = phone;
+      }
+    }
+
+    function handleAvatarUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        state.user.avatar = ev.target.result;
+        const preview = document.getElementById('reg-avatar-preview');
+        if (preview) preview.innerHTML = getAvatarHTML('w-20 h-20 text-2xl');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleProfileAvatarChange(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        state.user.avatar = ev.target.result;
+        saveState();
+        render();
+        showToast('تم تحديث الصورة الشخصية');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      state.user.name = document.getElementById('reg-name').value.trim();
+      state.user.gender = document.getElementById('reg-gender').value;
+      state.user.rank = document.getElementById('reg-rank').value;
+      state.user.grade = document.getElementById('reg-grade').value;
+      state.user.phone = document.getElementById('reg-phone').value.trim();
+      state.user.whatsapp = document.getElementById('reg-whatsapp').value.trim() || state.user.phone;
+      state.user.parentPhone = document.getElementById('reg-parent').value.trim();
+      state.user.birthDate = document.getElementById('reg-birth').value;
+      state.user.password = document.getElementById('reg-password').value;
+      state.user.status = 'pending';
+      state.pendingApprovalBanner = true;
+      saveState();
+
+      openModal(`
+        <div class="text-center space-y-3 py-2">
+          <div class="w-16 h-16 rounded-full bg-amber-100 text-brand-gold flex items-center justify-center mx-auto text-2xl">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h3 class="text-base font-extrabold text-brand-brown">تم استلام طلبك بنجاح!</h3>
+          <p class="text-xs text-stone-600 leading-relaxed">
+            طلب الانضمام إلى <strong>مدرسة السيرافيم</strong> قيد المراجعة لدى إدارة المدرسة والآباء الكهنة. سيتم التواصل معك عبر الواتساب فور اعتماده.
+          </p>
+          <div class="pt-2 space-y-2">
+            <button onclick="closeModal(); switchAuthTab('login');" class="w-full bg-brand-brown text-white text-xs font-bold py-3 rounded-2xl shadow">
+              العودة لصفحة الدخول
+            </button>
+            <button onclick="simulateAdminApproval()" class="w-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold py-2.5 rounded-xl hover:bg-emerald-100 transition">
+              <i class="fa-solid fa-user-check ml-1"></i>محاكاة موافقة الإدارة وتفعيل الحساب فوراً
+            </button>
+          </div>
+        </div>
+      `);
+    }
+
+    function simulateAdminApproval() {
+      state.user.status = 'active';
+      state.pendingApprovalBanner = false;
+      saveState();
+      closeModal();
+      openModal(`
+        <div class="text-center space-y-3 py-3">
+          <div class="w-16 h-16 rounded-full bg-emerald-700 text-white flex items-center justify-center mx-auto text-2xl shadow">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <h3 class="text-lg font-extrabold text-emerald-800">تم التفعيل</h3>
+          <p class="text-xs text-stone-600">حسابك في مدرسة السيرافيم بالمنشاة جاهز للدخول الآن.</p>
+          <button onclick="closeModal(); navigate('home');" class="w-full bg-brand-brown text-white text-xs font-bold py-3 rounded-2xl mt-2">
+            الدخول إلى التطبيق
+          </button>
+        </div>
+      `);
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const phone = document.getElementById('login-phone').value.trim();
+      const pass = document.getElementById('login-password').value;
+
+      if (state.user.status === 'pending') {
+        state.pendingApprovalBanner = true;
+        saveState();
+        render();
+        showToast('حسابك لا يزال قيد المراجعة من الإدارة', 'fa-clock text-amber-300');
+        return;
+      }
+
+      if (!phone || !pass) {
+        showToast('يرجى إدخال رقم الموبايل وكلمة المرور', 'fa-circle-exclamation text-rose-400');
+        return;
+      }
+
+      if (!state.user.phone) {
+        state.user.phone = phone;
+        state.user.password = pass;
+        saveState();
+        navigate('home');
+        showToast('تم تسجيل الدخول بنجاح');
+        return;
+      }
+
+      if (phone === state.user.phone && pass === state.user.password) {
+        navigate('home');
+      } else {
+        showToast('رقم الموبايل أو كلمة المرور غير صحيحة', 'fa-circle-exclamation text-rose-400');
+      }
+    }
+
+    function quickDemoLogin() {
+      state.user.status = 'active';
+      state.pendingApprovalBanner = false;
+      saveState();
+      navigate('home');
+      showToast('تم الدخول إلى النسخة الجديدة المصفّرة');
+    }
+
+    function logout() {
+      navigate('auth');
+      showToast('تم تسجيل الخروج');
+    }
+
+    function showForgotPasswordModal() {
+      openModal(`
+        <div class="text-center space-y-3">
+          <div class="w-12 h-12 rounded-full bg-cream-goldLight text-brand-gold flex items-center justify-center mx-auto text-lg">
+            <i class="fa-solid fa-key"></i>
+          </div>
+          <h3 class="text-sm font-extrabold text-brand-brown">استعادة كلمة المرور</h3>
+          <p class="text-xs text-stone-600 leading-relaxed">
+            لإعادة تعيين كلمة المرور، يرجى التواصل مع خادم الفصل أو إدارة مدرسة السيرافيم بكنيسة العذراء بالمنشاة على الرقم:
+          </p>
+          <p class="text-sm font-extrabold text-brand-brown bg-cream-soft py-2 rounded-xl" dir="ltr">01000000001</p>
+          <button onclick="closeModal()" class="w-full bg-brand-brown text-white text-xs font-bold py-2.5 rounded-xl">حسناً</button>
+        </div>
+      `);
+    }
+
+    // Attendance Actions
+    function setAttendanceState(newStatus) {
+      state.attendance.status = newStatus;
+      if (newStatus === 'checked_in' && !state.attendance.checkInTime) {
+        state.attendance.checkInTime = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+      }
+      saveState();
+      render();
+    }
+
+    function simulateQrScan() {
+      if (state.attendance.status === 'checked_in') {
+        showToast('تم تسجيل حضورك اليوم بالفعل!');
+        return;
+      }
+      state.attendance.status = 'checked_in';
+      state.attendance.checkInTime = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+      state.user.points += 10;
+      saveState();
+      render();
+
+      openModal(`
+        <div class="text-center space-y-3 py-2">
+          <div class="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center mx-auto text-2xl">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+          <h3 class="text-base font-extrabold text-brand-brown">تم تسجيل الحضور بنجاح</h3>
+          <p class="text-xs text-stone-600 leading-relaxed">
+            تم تسجيل حضورك في الموعد. حصلت على <strong>10 نقاط</strong>.
+            <br/>إجمالي نقاطك: <strong class="text-brand-brown">${state.user.points}</strong>
+          </p>
+          <button onclick="closeModal()" class="w-full bg-brand-brown text-white text-xs font-bold py-3 rounded-2xl mt-2">
+            إغلاق
+          </button>
+        </div>
+      `);
+    }
+
+    function handleManualCode(e) {
+      e.preventDefault();
+      const val = document.getElementById('manual-code-input').value.trim();
+      if (val.length !== 6) {
+        showToast('يرجى إدخال كود مكون من 6 أرقام', 'fa-triangle-exclamation text-amber-300');
+        return;
+      }
+      simulateQrScan();
+    }
+
+    function recordCheckOut() {
+      if (state.attendance.status === 'pending') {
+        showToast('يرجى تسجيل الحضور أولاً قبل الانصراف', 'fa-circle-exclamation text-amber-300');
+        return;
+      }
+      state.attendance.status = 'checked_out';
+      state.attendance.checkOutTime = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+      saveState();
+      render();
+      showToast('تم تسجيل الانصراف بنجاح — نراك الأسبوع القادم!');
+    }
+
+    // Recitation & Materials Actions
+    function selectRecitationSubject(id) {
+      state.activeSubjectId = id;
+      saveState();
+      render();
+    }
+
+    function setRecitationFilter(filter) {
+      state.recitationFilter = filter;
+      saveState();
+      render();
+    }
+
+    function openRecitationRecorder(subjectId, taskId) {
+      const task = state.subjects[subjectId].tasks.find(t => t.id === taskId);
+      openModal(`
+        <div class="text-center space-y-4">
+          <div class="flex items-center justify-between border-b border-cream-soft pb-2">
+            <span class="text-xs font-extrabold text-brand-brown">تسليم تسميع صوتي</span>
+            <button onclick="closeModal()" class="text-stone-400 hover:text-brand-brown"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <p class="text-xs font-bold text-brand-brown">${task.title}</p>
+
+          <div class="bg-cream-soft rounded-2xl p-5 flex flex-col items-center">
+            <div class="flex items-end gap-1 h-8 mb-3">
+              <span class="wave-bar w-1.5 h-6 bg-brand-gold rounded-full" style="animation-delay:0.1s"></span>
+              <span class="wave-bar w-1.5 h-8 bg-brand-brown rounded-full" style="animation-delay:0.2s"></span>
+              <span class="wave-bar w-1.5 h-5 bg-brand-gold rounded-full" style="animation-delay:0.3s"></span>
+              <span class="wave-bar w-1.5 h-8 bg-brand-brown rounded-full" style="animation-delay:0.15s"></span>
+              <span class="wave-bar w-1.5 h-6 bg-brand-gold rounded-full" style="animation-delay:0.25s"></span>
+            </div>
+            <p class="text-[11px] font-bold text-stone-600">جاهز لتسجيل الصوت وإرساله للخادم للتقييم</p>
+          </div>
+
+          <button onclick="submitRecitationTask('${subjectId}', '${taskId}')" class="w-full bg-brand-brown hover:bg-brand-brownDark text-white text-xs font-bold py-3 rounded-2xl shadow flex items-center justify-center gap-2">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>إرسال التسجيل الصوتي الآن</span>
+          </button>
+        </div>
+      `);
+    }
+
+    function submitRecitationTask(subjectId, taskId) {
+      const task = state.subjects[subjectId].tasks.find(t => t.id === taskId);
+      task.status = 'completed';
+      task.score = '10/10';
+      task.dueDate = 'تم التسليم والتقييم بنجاح';
+      state.user.points += 15;
+      saveState();
+      closeModal();
+      render();
+      showToast('تم إرسال التسميع وحصلت على 10/10 (+15 نقطة)!');
+    }
+
+    function openPdfPreview(subjectId, matId) {
+      const mat = state.subjects[subjectId].materials.find(m => m.id === matId);
+      openModal(`
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-cream-soft pb-2.5">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-file-pdf text-rose-600"></i>
+              <h3 class="text-xs font-extrabold text-brand-brown">${mat.title}</h3>
+            </div>
+            <button onclick="closeModal()" class="text-stone-400 hover:text-brand-brown"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div class="bg-cream-bg border border-brand-goldBorder rounded-2xl p-3.5 text-xs text-brand-brown leading-loose whitespace-pre-line max-h-64 overflow-y-auto font-semibold">
+            ${mat.content}
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button onclick="showToast('تم حفظ المذكرة على جهازك'); closeModal();" class="bg-brand-brown text-white text-xs font-bold py-2.5 rounded-xl">
+              <i class="fa-solid fa-download ml-1"></i>تحميل PDF
+            </button>
+            <button onclick="closeModal()" class="bg-cream-soft text-brand-brown text-xs font-bold py-2.5 rounded-xl">
+              إغلاق
+            </button>
+          </div>
+        </div>
+      `);
+    }
+
+    // Rewards Wheel Modal
+    function openWheelModal() {
+      const prizes = [
+        { label: '+25 نقطة', points: 25, color: '#4A2311' },
+        { label: 'هدية من الخادم', points: 10, color: '#C88A36' },
+        { label: '+50 نقطة', points: 50, color: '#7C2D12' },
+        { label: 'أيقونة بركة', points: 15, color: '#B45309' },
+        { label: '+100 نقطة', points: 100, color: '#3F1D0B' },
+        { label: 'ختم إضافي', points: 20, color: '#D97706' }
+      ];
+
+      openModal(`
+        <div class="text-center space-y-4">
+          <div class="flex items-center justify-between border-b border-cream-soft pb-2">
+            <span class="text-xs font-extrabold text-brand-brown">عجلة المكافآت — مدرسة السيرافيم</span>
+            <button onclick="closeModal()" class="text-stone-400 hover:text-brand-brown"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <div class="relative w-56 h-56 mx-auto my-2 flex items-center justify-center">
+            <!-- Top Pointer -->
+            <div class="absolute -top-2 left-1/2 -translate-x-1/2 z-20 text-rose-600 text-2xl drop-shadow">
+              <i class="fa-solid fa-caret-down"></i>
+            </div>
+
+            <!-- Spinning Wheel -->
+            <div id="reward-wheel-disc" class="wheel-transition w-52 h-52 rounded-full border-4 border-brand-gold shadow-lg relative overflow-hidden"
+              style="background: conic-gradient(#4A2311 0deg 60deg, #C88A36 60deg 120deg, #6B3820 120deg 180deg, #D97706 180deg 240deg, #331609 240deg 300deg, #B45309 300deg 360deg);">
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-12 h-12 rounded-full bg-white border-2 border-brand-gold flex items-center justify-center shadow">
+                  <i class="fa-solid fa-cross text-brand-crimson"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p id="wheel-result-text" class="text-xs font-bold text-stone-600">
+            ${state.user.spinsAvailable > 0 ? `لديك (${state.user.spinsAvailable}) لفة متاحة — اضغط للتدوير!` : 'تم استخدام لفاتك المتاحة، أكمل 4 أختام جديدة!'}
+          </p>
+
+          <button id="spin-wheel-btn" onclick="spinRewardsWheel()" class="w-full bg-brand-brown hover:bg-brand-brownDark text-white text-xs font-bold py-3 rounded-2xl shadow transition">
+            <i class="fa-solid fa-rotate ml-1"></i>
+            <span>تدوير العجلة الآن</span>
+          </button>
+        </div>
+      `);
+    }
+
+    function spinRewardsWheel() {
+      const disc = document.getElementById('reward-wheel-disc');
+      const resText = document.getElementById('wheel-result-text');
+      const btn = document.getElementById('spin-wheel-btn');
+      if (!disc || btn.disabled) return;
+
+      btn.disabled = true;
+      btn.classList.add('opacity-60');
+
+      const extraDeg = 1440 + Math.floor(Math.random() * 360);
+      disc.style.transform = `rotate(${extraDeg}deg)`;
+
+      const rewards = [
+        { text: 'مبروك! فزت بـ +50 نقطة تشجيعية!', pts: 50 },
+        { text: 'مبروك! فزت بهدية رمزية من الخادم + 25 نقطة!', pts: 25 },
+        { text: 'مبروك! فزت بالجائزة الكبرى +100 نقطة!', pts: 100 }
+      ];
+      const chosen = rewards[Math.floor(Math.random() * rewards.length)];
+
+      setTimeout(() => {
+        if (state.user.spinsAvailable > 0) {
+          state.user.spinsAvailable -= 1;
+          state.user.spinsUsed += 1;
+        }
+        state.user.points += chosen.pts;
+        saveState();
+        resText.innerHTML = `<span class="text-emerald-700 font-extrabold text-sm">${chosen.text}</span>`;
+        showToast(chosen.text);
+        if (state.currentScreen === 'points') render();
+      }, 4250);
+    }
+
+    // Notifications Actions
+    function markAllNotificationsRead() {
+      state.notifications.forEach(n => n.unread = false);
+      saveState();
+      render();
+      showToast('تم تعليم جميع الإشعارات كمقروءة');
+    }
+
+    function toggleNotificationRead(id) {
+      const item = state.notifications.find(n => n.id === id);
+      if (item) {
+        item.unread = false;
+        saveState();
+        render();
+      }
+    }
+
+    // Profile Actions
+    function handleSaveProfile(e) {
+      e.preventDefault();
+      state.user.name = document.getElementById('prof-name').value.trim();
+      state.user.phone = document.getElementById('prof-phone').value.trim();
+      state.user.whatsapp = document.getElementById('prof-whatsapp').value.trim();
+      state.user.parentPhone = document.getElementById('prof-parent').value.trim();
+      state.user.birthDate = document.getElementById('prof-birth').value;
+      state.user.rank = document.getElementById('prof-rank').value;
+      state.user.grade = document.getElementById('prof-grade').value;
+      saveState();
+      render();
+      showToast('تم حفظ تعديلات بياناتك بنجاح');
+    }
+
+    function openChangePasswordModal() {
+      openModal(`
+        <div class="space-y-3.5 relative">
+          <span class="absolute -top-8 right-2 bg-white border border-brand-gold text-brand-brown text-[10px] font-extrabold px-2.5 py-0.5 rounded-full">كلمة السر</span>
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-extrabold text-brand-brown">تغيير كلمة المرور</h3>
+            <button onclick="closeModal()" class="text-stone-400 hover:text-brand-brown"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <form onsubmit="handleChangePassword(event)" class="space-y-3">
+            <div>
+              <label class="block text-xs font-bold text-stone-600 mb-1">كلمة المرور الحالية</label>
+              <input id="old-pass" type="password" value="" placeholder="أدخل كلمة المرور الحالية" required class="w-full bg-cream-soft border border-brand-goldBorder rounded-xl py-2.5 px-3 text-xs text-left focus:outline-none focus:border-brand-gold" dir="ltr" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-stone-600 mb-1">كلمة المرور الجديدة</label>
+              <input id="new-pass" type="password" value="" placeholder="أدخل كلمة المرور الجديدة" required minlength="4" class="w-full bg-cream-soft border border-brand-goldBorder rounded-xl py-2.5 px-3 text-xs text-left focus:outline-none focus:border-brand-gold" dir="ltr" />
+            </div>
+            <div class="grid grid-cols-3 gap-2 pt-1">
+              <button type="submit" class="col-span-2 bg-brand-brown text-white text-xs font-bold py-2.5 rounded-xl">تأكيد</button>
+              <button type="button" onclick="closeModal()" class="bg-cream-soft text-brand-brown text-xs font-bold py-2.5 rounded-xl">إلغاء</button>
+            </div>
+          </form>
+        </div>
+      `);
+    }
+
+    function handleChangePassword(e) {
+      e.preventDefault();
+      const oldPass = document.getElementById('old-pass').value;
+      const newPass = document.getElementById('new-pass').value;
+      if (state.user.password && oldPass !== state.user.password) {
+        showToast('كلمة المرور الحالية غير صحيحة', 'fa-circle-exclamation text-rose-400');
+        return;
+      }
+      state.user.password = newPass;
+      saveState();
+      closeModal();
+      showToast('تم حفظ كلمة المرور الجديدة بنجاح');
+    }
+
+    function copyText(txt) {
+      if (!txt || !txt.trim()) {
+        showToast('لا يوجد رقم منسوخ بعد', 'fa-circle-exclamation text-amber-300');
+        return;
+      }
+      const temp = document.createElement('textarea');
+      temp.value = txt;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showToast('تم نسخ الرقم: ' + txt);
+    }
+
+    // Admin Simulator Modal (To test pending/active states & reset)
+    function openAdminSimulator() {
+      openModal(`
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-cream-soft pb-2">
+            <h3 class="text-xs font-extrabold text-brand-brown"><i class="fa-solid fa-user-shield text-brand-gold ml-1"></i>لوحة محاكاة الإدارة والخادم</h3>
+            <button onclick="closeModal()" class="text-stone-400"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <p class="text-[11px] text-stone-600 leading-relaxed">
+            استخدم هذه الأدوات لتجربة دورة حياة حساب الطالب في مدرسة السيرافيم:
+          </p>
+          <div class="space-y-2">
+            <button onclick="setAccountStatusDemo('pending')" class="w-full text-right bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-bold p-2.5 rounded-xl flex items-center justify-between">
+              <span>1. وضع الحساب "قيد المراجعة"</span>
+              <i class="fa-solid fa-clock"></i>
+            </button>
+            <button onclick="simulateAdminApproval()" class="w-full text-right bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-900 text-xs font-bold p-2.5 rounded-xl flex items-center justify-between">
+              <span>2. اعتماد وتفعيل حساب الطالب</span>
+              <i class="fa-solid fa-circle-check"></i>
+            </button>
+            <button onclick="grantExtraSealDemo()" class="w-full text-right bg-cream-soft hover:bg-cream-goldLight border border-brand-goldBorder text-brand-brown text-xs font-bold p-2.5 rounded-xl flex items-center justify-between">
+              <span>3. منح الطالب لفة عجلة مكافآت + 20 نقطة</span>
+              <i class="fa-solid fa-gift text-brand-gold"></i>
+            </button>
+            <button onclick="resetAppDemo()" class="w-full text-right bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-800 text-xs font-bold p-2.5 rounded-xl flex items-center justify-between">
+              <span>إعادة ضبط البيانات الافتراضية</span>
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+      `);
+    }
+
+    function setAccountStatusDemo(status) {
+      state.user.status = status;
+      state.pendingApprovalBanner = (status === 'pending');
+      state.currentScreen = 'auth';
+      state.authTab = 'login';
+      saveState();
+      closeModal();
+      render();
+    }
+
+    function grantExtraSealDemo() {
+      state.user.spinsAvailable += 1;
+      state.user.points += 20;
+      saveState();
+      closeModal();
+      render();
+      showToast('تم منح الطالب لفة مكافآت و20 نقطة!');
+    }
+
+    function resetAppDemo() {
+      localStorage.removeItem(STORAGE_KEY);
+      state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      closeModal();
+      render();
+      showToast('تمت إعادة ضبط التطبيق بالكامل');
+    }
+
+    /**
+     * ============================================================================
+     * MAIN RENDER LOOP
+     * ============================================================================
+     */
+    function render() {
+      const container = document.getElementById('screen-container');
+      switch (state.currentScreen) {
+        case 'auth':
+          container.innerHTML = renderAuthScreen();
+          break;
+        case 'home':
+          container.innerHTML = renderHomeScreen();
+          break;
+        case 'attendance':
+          container.innerHTML = renderAttendanceScreen();
+          break;
+        case 'recitation':
+          container.innerHTML = renderRecitationScreen();
+          break;
+        case 'materials':
+          container.innerHTML = renderMaterialsScreen();
+          break;
+        case 'points':
+          container.innerHTML = renderPointsScreen();
+          break;
+        case 'notifications':
+          container.innerHTML = renderNotificationsScreen();
+          break;
+        case 'profile':
+          container.innerHTML = renderProfileScreen();
+          break;
+        default:
+          container.innerHTML = renderAuthScreen();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      render();
+    });
+  </script>
+</body>
+</html>
