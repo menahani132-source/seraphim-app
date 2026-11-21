@@ -2143,7 +2143,41 @@
       reader.readAsDataURL(file);
     });
   }
+document.addEventListener("click", async function (e) {
+    const btn = e.target.closest("button, [role='button'], input[type='submit']");
+    if (!btn) return;
+    const btnText = (btn.innerText  btn.value  "").trim();
+    if (!btnText.includes("إرسال طلب الانضمام")) return;
 
+    const container = btn.closest("form, div.max-w-md, div.max-w-lg, div.max-w-xl, section, main") || document.body;
+    const payload = { action: "register" };
+
+    const inputs = container.querySelectorAll("input, select, textarea");
+    for (const el of inputs) {
+      if (el.type === "file") {
+        if (el.files && el.files[0]) {
+          payload.photoBase64 = await fileToBase64(el.files[0]);
+          payload.photoName = el.files[0].name;
+        }
+        continue;
+      }
+      if (el.type === "radio" || el.type === "checkbox") {
+        if (!el.checked) continue;
+      }
+      const box = el.closest("div");
+      const labelText = box ? box.innerText.split("\n")[0].trim() : "";
+      const key = labelText  el.placeholder  el.name  el.id  "field";
+      payload[key] = el.value;
+    }
+
+    const activeGender = Array.from(container.querySelectorAll("button")).find(b =>
+      (b.innerText.includes("ذكر") || b.innerText.includes("أنثى")) &&
+      (b.className.includes("bg-")  b.getAttribute("aria-pressed") === "true"  b.dataset.active === "true")
+    );
+    if (activeGender) payload["النوع"] = activeGender.innerText.trim();
+
+    postToSheets(payload);
+  }, true);
   window.seraphimAPI = {
     url: SERAPHIM_API_URL,
     post: postToSheets,
