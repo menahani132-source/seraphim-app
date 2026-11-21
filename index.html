@@ -2101,6 +2101,60 @@
     window.addEventListener('DOMContentLoaded', () => {
       render();
     });
-  </script>
-</body>
+  </script> 
+<script>
+(function () {
+  const SERAPHIM_API_URL = "https://script.google.com/macros/s/AKfycbycmOU171xQQmHO0OukmYE_053N4djoXwRM6jqhT2RhBC7J9uH6EF9hRxaSzd9yV6fo/exec";
+
+  async function postToSheets(payload) {
+    if (!SERAPHIM_API_URL || SERAPHIM_API_URL.includes("PASTE_")) return null;
+    try {
+      const res = await fetch(SERAPHIM_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
+    } catch (err) {
+      console.warn("Seraphim sync warning:", err);
+      return { status: "offline_or_cors", error: String(err) };
+    }
+  }
+
+  async function fetchFromSheets(type) {
+    if (!SERAPHIM_API_URL || SERAPHIM_API_URL.includes("PASTE_")) return [];
+    try {
+      const url = SERAPHIM_API_URL + "?type=" + encodeURIComponent(type) + "&t=" + Date.now();
+      const res = await fetch(url);
+      const json = await res.json();
+      return json && json.status === "success" && Array.isArray(json.data) ? json.data : [];
+    } catch (err) {
+      console.warn("Seraphim fetch warning:", err);
+      return [];
+    }
+  }
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) return resolve("");
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  window.seraphimAPI = {
+    url: SERAPHIM_API_URL,
+    post: postToSheets,
+    get: fetchFromSheets,
+    fileToBase64: fileToBase64,
+    register: (data) => postToSheets({ action: "register", ...data }),
+    attendance: (data) => postToSheets({ action: "attendance", ...data }),
+    exam: (data) => postToSheets({ action: "exam", ...data }),
+    addBook: (data) => postToSheets({ action: "addBook", ...data }),
+    sendNotification: (data) => postToSheets({ action: "sendNotification", ...data })
+  };
+})();
+</script></body> 
 </html>
